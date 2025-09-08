@@ -112,8 +112,13 @@
 
         /* Safe area strip for iOS notch: white background above header */
         .safe-area-top {
-            height: env(safe-area-inset-top);
+            height: env(safe-area-inset-top, 44px);
             background: #ffffff;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
         
         .card {
@@ -403,10 +408,10 @@
         }
         
         .modal-body {
-            padding: 16px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
         }
         
         .modal-center {
@@ -428,25 +433,60 @@
             background: #0F766E;
             color: #ffffff;
             font-weight: 700;
-            margin: 4px 0 8px;
+            font-size: 14px;
+            margin: 0 auto 10px;
         }
         
         .item-name {
-            font-weight: 500;
+            font-weight: 700;
             color: #1A1A1A;
-            margin: 8px 0;
+            font-size: 16px;
+            margin: 4px 0 2px;
+            text-align: center;
+        }
+        
+        .store-info {
+            color: #1A1A1A;
+            font-size: 13px;
+            margin: 0 0 10px;
+            text-align: center;
+        }
+        
+        .order-code-container {
+            margin: 8px 0 12px;
+            text-align: center;
         }
         
         .order-code {
             display: inline-block;
-            border-radius: 8px;
             background: #0F766E;
-            color: #ffffff;
-            padding: 10px 16px;
-            font-size: 14px;
-            letter-spacing: 0.04em;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
             font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
         }
+        
+        .divider-line {
+            height: 1px;
+            background: #E5E7EB;
+            margin: 12px 0;
+        }
+        
+        .instructions {
+            margin: 8px 0 14px;
+            text-align: center;
+        }
+        
+        .instructions p {
+            color: #1A1A1A;
+            font-size: 13px;
+            line-height: 1.4;
+            margin: 0;
+        }
+        
         
         .status-icon {
             width: 56px;
@@ -490,7 +530,7 @@
         
         .swipe-track {
             position: relative;
-            height: 64px;
+            height: 52px;
             border-radius: 9999px;
             border: 1px solid #e2e8f0;
             background: #ffffff;
@@ -505,10 +545,10 @@
         
         .swipe-knob {
             position: absolute;
-            top: 8px;
-            left: 8px;
-            width: 48px;
-            height: 48px;
+            top: 6px;
+            left: 6px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: #0F766E;
             display: flex;
@@ -679,41 +719,29 @@
 
             <div class="modal-body">
                 <div class="modal-center">
-                    <div class="quantity-label">Qty</div>
-                    <div class="quantity-circle">${selectedStore && selectedStore.items && selectedStore.items[0] ? (selectedStore.items[0].items_available || selectedStore.items[0].quantity || 1) + 'x' : '1x'}</div>
-                    <div class="item-name">Evening Bag</div>
-                    <div>
-                        <span class="order-code">DK1H</span>
+                    <div class="quantity-circle" id="modal-quantity">1x</div>
+                    <div class="item-name" id="modal-item-name">Evening Bag</div>
+                    <div class="store-info" id="modal-store-info">Upper Crust - Watford Junction</div>
+                    <div class="order-code-container">
+                        <span class="order-code" id="modal-order-code">F88GWNF3C87Q0</span>
                     </div>
                 </div>
 
-                <div style="display: flex; align-items: center; justify-content: center;">
-                    <div id="status-icon" class="status-icon">
-                        <svg class="icon" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="9"/>
-                            <path d="M12 7v5l3 2"/>
-                        </svg>
-                    </div>
+                <div class="divider-line"></div>
+
+                <div class="instructions">
+                    <p>Swipe below and show the order to the staff. Make sure to swipe only when you're in the store ready to collect your meal.</p>
                 </div>
 
-                <div class="status-text">
-                    <span id="status-text">Show this screen to staff when collecting</span>
-                </div>
-
-                <div id="swipe-section">
-                    <div class="swipe-container">
-                        <div id="swipe-track" class="swipe-track">
-                            <div class="swipe-label">Swipe to confirm</div>
-                            <div id="swipe-knob" class="swipe-knob" draggable="true">
-                                <svg class="icon" viewBox="0 0 24 24">
-                                    <rect x="2" y="5" width="20" height="14" rx="7"/>
-                                    <path d="M10 12h6"/>
-                                    <path d="m14 9 3 3-3 3"/>
-                                </svg>
-                            </div>
+                <div class="swipe-container">
+                    <div class="swipe-track" id="swipeTrack">
+                        <div class="swipe-knob" id="swipeKnob">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
                         </div>
                     </div>
-                    <div class="swipe-instructions">Drag the handle all the way to the right.</div>
+                    <div class="swipe-label">Swipe to collect</div>
                 </div>
 
                 <button id="close-btn" onclick="hideModal()" class="close-button-modal">Close</button>
@@ -785,6 +813,7 @@
             const first = (selectedStore.items && selectedStore.items[0]) || null;
             if (first) {
                 const LOCALE = 'en-GB';
+                const quantity = (first.items_available || first.quantity || 1);
                 const col1 = document.createElement('div');
                 col1.className = 'summary-section';
                 const dateLabel = document.createElement('div');
@@ -801,7 +830,7 @@
                 bagLabel.textContent = 'SURPRISE BAG';
                 const bagValue = document.createElement('div');
                 bagValue.className = 'summary-value';
-                bagValue.textContent = `1x ${first.name || 'Bag'}`;
+                bagValue.textContent = `${quantity}x ${first.name || 'Bag'}`;
                 col1.appendChild(dateLabel);
                 col1.appendChild(dateValue);
                 col1.appendChild(bagLabel);
@@ -824,7 +853,12 @@
                 totalLabel.textContent = 'TOTAL';
                 const totalValue = document.createElement('div');
                 totalValue.className = 'summary-value bold';
-                totalValue.textContent = typeof first.price === 'number' ? `£${first.price.toFixed(2)}` : '';
+                if (typeof first.price === 'number') {
+                    const total = first.price * quantity;
+                    totalValue.textContent = `£${total.toFixed(2)}`;
+                } else {
+                    totalValue.textContent = '';
+                }
                 col2.appendChild(timeLabel);
                 col2.appendChild(timeValue);
                 col2.appendChild(totalLabel);
@@ -852,6 +886,27 @@
 
         // Simple JavaScript for modal and swipe functionality
         function showModal() {
+            // Update modal with dynamic data
+            const selectedStore = JSON.parse(localStorage.getItem('selectedStore') || 'null');
+            const firstItem = selectedStore && selectedStore.items && selectedStore.items[0] ? selectedStore.items[0] : null;
+            
+            // Update quantity
+            const quantity = firstItem ? (firstItem.items_available || firstItem.quantity || 1) : 1;
+            document.getElementById('modal-quantity').textContent = quantity + 'x';
+            
+            // Update item name
+            const itemName = firstItem ? (firstItem.name || 'Bag') : 'Bag';
+            document.getElementById('modal-item-name').textContent = itemName;
+            
+            // Update store info
+            const storeName = selectedStore ? (selectedStore.name || 'Store') : 'Store';
+            document.getElementById('modal-store-info').textContent = storeName;
+            
+            // Update order code (you can make this dynamic if needed)
+            document.getElementById('modal-order-code').textContent = 'F88GWNF3C87Q0';
+            
+            console.log('Modal updated with:', { quantity, itemName, storeName });
+            
             document.getElementById('collection-modal').classList.add('show');
         }
 

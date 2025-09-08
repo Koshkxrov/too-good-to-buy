@@ -551,6 +551,7 @@
                 store.items[0].pickup_interval = { start: start ? new Date(start).toISOString() : (store.items[0].pickup_interval && store.items[0].pickup_interval.start), end: end ? new Date(end).toISOString() : (store.items[0].pickup_interval && store.items[0].pickup_interval.end) };
                 store.items[0].quantity = qty;
                 store.items[0].items_available = qty;
+                console.log('Saving quantity:', qty, 'to store:', store);
                 localStorage.setItem('selectedStore', JSON.stringify(store));
                 const rs = JSON.parse(localStorage.getItem('realStores') || '[]');
                 const idx = rs.findIndex(s => s.id === store.id);
