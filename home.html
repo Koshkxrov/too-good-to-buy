@@ -526,7 +526,7 @@
                 const it = storeData.items[0];
                 document.getElementById('eo_name').value = it.name || '';
                 document.getElementById('eo_price').value = typeof it.price === 'number' ? it.price.toFixed(2) : '';
-                document.getElementById('eo_qty').value = it.quantity || 1;
+                document.getElementById('eo_qty').value = it.items_available || it.quantity || 1;
                 const s = it.pickup_interval && it.pickup_interval.start ? new Date(it.pickup_interval.start) : null;
                 const e = it.pickup_interval && it.pickup_interval.end ? new Date(it.pickup_interval.end) : null;
                 if (s) document.getElementById('eo_start').value = s.toISOString().slice(0,16);
@@ -550,6 +550,7 @@
                 store.items[0].price = isNaN(price) ? store.items[0].price : price;
                 store.items[0].pickup_interval = { start: start ? new Date(start).toISOString() : (store.items[0].pickup_interval && store.items[0].pickup_interval.start), end: end ? new Date(end).toISOString() : (store.items[0].pickup_interval && store.items[0].pickup_interval.end) };
                 store.items[0].quantity = qty;
+                store.items[0].items_available = qty;
                 localStorage.setItem('selectedStore', JSON.stringify(store));
                 const rs = JSON.parse(localStorage.getItem('realStores') || '[]');
                 const idx = rs.findIndex(s => s.id === store.id);
