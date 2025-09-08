@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stores - PickUp4Collection</title>
+    <link rel="stylesheet" href="css/stores.css">
+    <link rel="stylesheet" href="css/base.css">
+    <style>
+        /* Any additional page-specific styles can go here */
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+
+        <!-- Header -->
+        <header class="header">
+            <button class="back-btn" onclick="goBack()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <h1 class="header-title">Stores</h1>
+            <div style="width: 24px;"></div>
+        </header>
+
+        <main class="content">
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search stores..." id="searchInput">
+            </div>
+
+            <!-- Stores List -->
+            <div class="stores-list" id="storesList">
+                <!-- Stores will be populated by JavaScript -->
+            </div>
+
+            <!-- No stores message -->
+            <div class="no-stores" id="noStores" style="display: none;">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+                <p>No stores found</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="floating-button" id="floatingButton" onclick="proceedToOrder()">
+        ✓
+    </button>
+
+    <script>
+        function goBack() {
+            if (document.referrer) {
+                history.back();
+            } else {
+                window.location.href = 'home.html';
+            }
+        }
+        function proceedToOrder() {
+            window.location.href = 'index.html';
+        }
+    </script>
+    <script>
+        // Inline data and logic so page works from file:// without fetch
+        const TGTG_DATA = JSON.parse(localStorage.getItem('INLINE_DATA') || 'null');
+        function aggregateStores(data) {
+            const byStore = new Map();
+            (data || []).forEach(entry => {
+                const s = entry.store;
+                const it = entry.item;
+                if (!s || !it) return;
+                if (!byStore.has(s.store_id)) {
+                    byStore.set(s.store_id, {
+                        id: s.store_id,
+                        name: s.store_name + (s.branch ? ' - ' + s.branch : ''),
+                        shortName: s.store_name,
+                        branch: s.branch,
+                        logo: (s.logo_picture && s.logo_picture.current_url) || (it.logo_picture && it.logo_picture.current_url) || '',
+                        cover: (s.cover_picture && s.cover_picture.current_url) || (it.cover_picture && it.cover_picture.current_url) || '',
+                        address: s.store_location && s.store_location.address ? s.store_location.address.address_line : '',
+                        location: s.store_location && s.store_location.address ? s.store_location.address.address_line : '',
+                        description: s.description || '',
+                        website: s.website || '',
+                        distance: s.distance || 0,
+                        items: []
+                    });
+                }
+                const storeObj = byStore.get(s.store_id);
+                const priceMinor = it.item_price && it.item_price.minor_units;
+                const decimals = (it.item_price && it.item_price.decimals) || 2;
+                const price = typeof priceMinor === 'number' ? (priceMinor / Math.pow(10, decimals)) : null;
+                storeObj.items.push({
+                    id: it.item_id,
+                    name: it.name,
+                    price,
+                    valueMinor: it.item_value && it.item_value.minor_units,
+                    valueDecimals: (it.item_value && it.item_value.decimals) || 2,
+                    cover: it.cover_picture && it.cover_picture.current_url,
+                    pickup_interval: entry.pickup_interval || null,
+                    items_available: entry.items_available,
+                    item_type: entry.item_type
+                });
+            });
+            return Array.from(byStore.values());
+        }
+
+        function renderStoresList(stores) {
+            const storesList = document.getElementById('storesList');
+            const noStores = document.getElementById('noStores');
+            storesList.innerHTML = '';
+            if (!stores || stores.length === 0) {
+                noStores.style.display = 'block';
+                return;
+            }
+            noStores.style.display = 'none';
+            stores.forEach(store => {
+                const item = document.createElement('div');
+                item.className = 'store-item';
+                const header = document.createElement('div');
+                header.className = 'store-header';
+                const logo = document.createElement('div');
+                logo.className = 'store-logo';
+                if (store.logo) {
+                    const img = document.createElement('img');
+                    img.src = store.logo;
+                    img.alt = store.shortName + ' logo';
+                    img.onerror = () => { logo.textContent = store.shortName.charAt(0); };
+                    logo.appendChild(img);
+                } else {
+                    logo.textContent = store.shortName.charAt(0);
+                }
+                const info = document.createElement('div');
+                info.className = 'store-info';
+                const name = document.createElement('div');
+                name.className = 'store-name';
+                name.textContent = store.name;
+                const loc = document.createElement('div');
+                loc.className = 'store-location';
+                loc.textContent = store.address || store.location || '';
+                info.appendChild(name);
+                info.appendChild(loc);
+                header.appendChild(logo);
+                header.appendChild(info);
+                const details = document.createElement('div');
+                details.className = 'store-details';
+                const dist = document.createElement('div');
+                dist.className = 'store-distance';
+                dist.textContent = typeof store.distance === 'number' ? `${Math.round(store.distance * 10) / 10} km` : '';
+                details.appendChild(dist);
+                item.appendChild(header);
+                item.appendChild(details);
+                item.addEventListener('click', () => {
+                    localStorage.setItem('selectedStore', JSON.stringify(store));
+                    window.location.href = 'index.html';
+                });
+                storesList.appendChild(item);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pull inline data from home page if available
+            if (!TGTG_DATA) {
+                try {
+                    const fromHome = JSON.parse(sessionStorage.getItem('TGTG_DATA') || 'null');
+                    if (fromHome) {
+                        localStorage.setItem('INLINE_DATA', JSON.stringify(fromHome));
+                    }
+                } catch (e) {}
+            }
+            const data = TGTG_DATA || JSON.parse(localStorage.getItem('INLINE_DATA') || '[]');
+            const staticStores = aggregateStores(data);
+            // Deduplicate by id, put user stores first
+            const userStores = JSON.parse(localStorage.getItem('realStores') || '[]');
+            const map = new Map();
+            userStores.forEach(s => map.set(s.id, s));
+            staticStores.forEach(s => { if (!map.has(s.id)) map.set(s.id, s); });
+            const allStores = Array.from(map.values());
+            const sorted = allStores.slice().sort((a, b) => {
+                const ad = (typeof a.distance === 'number') ? a.distance : Infinity;
+                const bd = (typeof b.distance === 'number') ? b.distance : Infinity;
+                return ad - bd;
+            });
+            localStorage.setItem('realStores', JSON.stringify(sorted));
+            renderStoresList(sorted);
+
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function(e) {
+                const term = e.target.value.toLowerCase();
+                const filtered = (JSON.parse(localStorage.getItem('realStores') || '[]')).filter(s =>
+                    (s.name && s.name.toLowerCase().includes(term)) ||
+                    (s.address && s.address.toLowerCase().includes(term))
+                );
+                renderStoresList(filtered);
+            });
+        });
+    </script>
+</body>
+</html>

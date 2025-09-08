@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Your Order - Upper Crust</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #F8F7F5;
+            color: #1A1A1A;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+        
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            background: #F8F7F5;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .status-icons {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .signal-bar {
+            width: 16px;
+            height: 8px;
+            background: black;
+            border-radius: 2px;
+        }
+        
+        .battery {
+            width: 24px;
+            height: 12px;
+            border: 1px solid black;
+            border-radius: 2px;
+        }
+        
+        .header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            background: white;
+            border-bottom: none; /* no line under the title */
+            position: relative; /* allow absolute centering of title */
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            margin-right: 16px;
+        }
+        
+        .back-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .header-title {
+            flex: 1;
+            text-align: center;
+            font-size: 16px; /* smaller title */
+            font-weight: 600; /* thinner */
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%); /* perfectly centered regardless of back button */
+        }
+        
+        .content {
+            padding: 16px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        /* Make first card thinner than the second */
+        .store-card { padding: 10px 14px; }
+        .order-card { padding: 24px; }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 8px; /* tighter */
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .logo-upper {
+            color: #8B4513;
+        }
+        
+        .logo-crust {
+            color: #FFD700;
+        }
+        
+        .logo-underline {
+            width: 64px;
+            height: 2px;
+            background: #FFD700;
+            margin: 4px auto 0;
+        }
+        
+        .store-logo-img {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            margin: 0 auto 8px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .store-logo-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+        
+        .store-name {
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+        
+        .store-address {
+            color: #666666;
+            font-size: 13px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        
+        .find-store {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00796B;
+            font-size: 13px;
+            text-decoration: none;
+        }
+        
+        .find-store svg {
+            width: 16px;
+            height: 16px;
+            margin-left: 4px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 24px;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding-bottom: 12px;
+            font-weight: bold;
+            color: #1A1A1A;
+        }
+        
+        .tab.active {
+            border-bottom: 2px solid #0F766E; /* match button green */
+            color: #0F766E;
+        }
+        
+        .tab.inactive {
+            color: #666666;
+            font-weight: normal;
+        }
+        
+        .order-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .summary-section {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .summary-label {
+            font-size: 12px;
+            color: #666666;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        
+        .summary-value {
+            font-size: 14px;
+            font-weight: 400; /* not bold */
+        }
+        
+        .summary-value.bold {
+            font-weight: 400; /* keep not bold */
+        }
+        
+        .order-summary .summary-section:last-child {
+            text-align: right;
+            align-items: flex-end;
+        }
+        
+        .packaging-note {
+            font-size: 13px;
+            color: #1A1A1A;
+            line-height: 1.5;
+        }
+
+        .dotted-divider {
+            border-top: 1px dashed #e5e7eb;
+            margin: 16px 0 12px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .collect-button {
+            width: 100%;
+            background: #0F766E;
+            color: #ffffff;
+            padding: 10px 16px;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            min-height: 40px;
+            margin: 0 auto;
+        }
+        .collect-button:hover { background: #0B615B; }
+        
+        .reminder-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00796B;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        
+        .reminder-link svg {
+            width: 16px;
+            height: 16px;
+            margin-left: 8px;
+        }
+        
+        .footer-suggestion { display: none; }
+
+        /* Rating + Collected blocks */
+        .rating-card {
+            background: #2F7D6E;
+            color: #fff;
+            border-radius: 16px;
+            padding: 24px 16px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .rating-title { font-weight: 700; margin-bottom: 16px; }
+        .stars { display: flex; gap: 16px; justify-content: center; }
+        .stars svg { width: 28px; height: 28px; color: #fff; }
+
+        .collected-wrapper {
+            border: 4px solid #0F4C45;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .collected-header {
+            background: #0F4C45;
+            color: #fff;
+            padding: 10px 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+        .collected-inner {
+            background: #fff;
+            padding: 16px;
+        }
+        .order-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            row-gap: 20px;
+        }
+        .grid-label { color: #7B8A8B; font-weight: 700; font-size: 14px; letter-spacing: 0.04em; }
+        .grid-value { font-size: 18px; color: #1A1A1A; }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 50;
+        }
+        
+        .modal.show {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 24px 24px 0 0;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid #e2e8f0;
+            max-width: 400px;
+            width: 100%;
+            margin: 0 auto;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-title {
+            font-weight: 700;
+            color: #1A1A1A;
+        }
+        
+        .close-button {
+            color: #666666;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 18px;
+        }
+        
+        .modal-body {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .modal-center {
+            text-align: center;
+        }
+        
+        .quantity-label {
+            font-size: 12px;
+            color: #666666;
+        }
+        
+        .quantity-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #0F766E;
+            color: #ffffff;
+            font-weight: 700;
+            margin: 4px 0 8px;
+        }
+        
+        .item-name {
+            font-weight: 500;
+            color: #1A1A1A;
+            margin: 8px 0;
+        }
+        
+        .order-code {
+            display: inline-block;
+            border-radius: 8px;
+            background: #0F766E;
+            color: #ffffff;
+            padding: 10px 16px;
+            font-size: 14px;
+            letter-spacing: 0.04em;
+            font-weight: 700;
+        }
+        
+        .status-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #E0F2F1;
+            color: #00796B;
+            border: 1px solid rgba(0, 121, 107, 0.2);
+            margin: 0 auto;
+        }
+        
+        .status-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .status-text {
+            text-align: center;
+            font-size: 12px;
+            color: #666666;
+        }
+        
+        .countdown {
+            text-align: center;
+            font-size: 12px;
+            color: #666666;
+            display: none;
+        }
+        
+        .countdown.show {
+            display: block;
+        }
+        
+        .swipe-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .swipe-track {
+            position: relative;
+            height: 64px;
+            border-radius: 9999px;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .swipe-track.confirmed {
+            border-color: #a7f3d0;
+            background: #E0F2F1;
+        }
+        
+        .swipe-knob {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #0F766E;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            color: white;
+            cursor: grab;
+            transition: transform 0.3s ease;
+        }
+        
+        .swipe-knob:active {
+            cursor: grabbing;
+        }
+        
+        .swipe-knob.dragging {
+            transition: none;
+        }
+        
+        .swipe-knob.confirmed {
+            background: #00796B;
+            transform: translateX(calc(100vw - 4rem - 0.5rem));
+        }
+        
+        .swipe-label {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0F766E;
+            font-size: 16px;
+            font-weight: 700;
+            pointer-events: none;
+        }
+        
+        .swipe-instructions {
+            margin-top: 8px;
+            text-align: center;
+            font-size: 12px;
+            color: #666666;
+        }
+        
+        .close-button-modal {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            font-size: 14px;
+            background: white;
+            color: #1A1A1A;
+            cursor: pointer;
+            display: none;
+        }
+        
+        .close-button-modal.show {
+            display: block;
+        }
+        
+        .icon {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+
+        <!-- Header -->
+        <header class="header">
+            <button class="back-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 6l-6 6 6 6"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 12h16"/>
+                </svg>
+            </button>
+            <h1 class="header-title" style="text-align:center;">Your order</h1>
+            <div style="width: 12px;"></div>
+        </header>
+
+        <main class="content">
+            <!-- Store Information Card -->
+            <div class="card store-card">
+                <!-- Store Logo -->
+                <div class="logo" id="storeLogo">
+                    <div class="store-logo-img" id="storeLogoImg" style="display: none;">
+                        <img src="" alt="Store logo" id="storeLogoImage">
+                    </div>
+                    <div class="logo-text" id="defaultLogo">
+                        <span class="logo-upper">Upper</span>
+                        <span class="logo-crust">Crust</span>
+                    </div>
+                    <div class="logo-underline"></div>
+                </div>
+                
+                <!-- Store Name -->
+                <h2 class="store-name" id="storeName">Loading...</h2>
+                
+                <!-- Address -->
+                <p class="store-address" id="storeAddress"></p>
+                
+                <!-- Find store link -->
+                <a href="stores.html" class="find-store">
+                    <span>Find store</span>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11a3 3 0 100-6 3 3 0 000 6z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 8c0 6.5-7.5 12-7.5 12S4.5 14.5 4.5 8a7.5 7.5 0 1115 0z"/>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Order Details Card -->
+            <div class="card order-card">
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tab active">I'm collecting</div>
+                    <div class="tab inactive">Ask a friend</div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="order-summary" id="orderSummary">
+                    <!-- Filled dynamically from selectedStore.items[0] if present -->
+                </div>
+
+                <!-- Packaging label + Note above dotted line -->
+                <div class="summary-label" style="margin-top: 8px;">PACKAGING</div>
+                <p class="packaging-note" id="packagingNote"></p>
+                <div class="dotted-divider"></div>
+                
+            <!-- Action Buttons in same card -->
+            <div class="action-buttons">
+                <!-- Collect button -->
+                <button id="collect-btn" onclick="showModal()" class="collect-button">
+                    Tap to collect
+                </button>
+
+                <!-- Receive reminder button with bell icon -->
+                <a href="#" class="reminder-link">
+                    <span>Receive a reminder</span>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                </a>
+            </div>
+            </div>
+
+
+            <!-- Footer Suggestion -->
+            <div class="footer-suggestion">
+                <h3 class="footer-title">SAME TIME, CLOSE BY!</h3>
+            </div>
+        </main>
+    </div>
+
+    <!-- Collection Modal -->
+    <div id="collection-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Order to collect</div>
+                <button onclick="hideModal()" class="close-button" aria-label="Close dialog">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-center">
+                    <div class="quantity-label">Qty</div>
+                    <div class="quantity-circle">1x</div>
+                    <div class="item-name">Evening Bag</div>
+                    <div>
+                        <span class="order-code">DK1H</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <div id="status-icon" class="status-icon">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="9"/>
+                            <path d="M12 7v5l3 2"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="status-text">
+                    <span id="status-text">Show this screen to staff when collecting</span>
+                </div>
+
+                <div id="swipe-section">
+                    <div class="swipe-container">
+                        <div id="swipe-track" class="swipe-track">
+                            <div class="swipe-label">Swipe to confirm</div>
+                            <div id="swipe-knob" class="swipe-knob" draggable="true">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <rect x="2" y="5" width="20" height="14" rx="7"/>
+                                    <path d="M10 12h6"/>
+                                    <path d="m14 9 3 3-3 3"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swipe-instructions">Drag the handle all the way to the right.</div>
+                </div>
+
+                <button id="close-btn" onclick="hideModal()" class="close-button-modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store data
+        let selectedStore = null;
+        const INLINE_DATA = JSON.parse(localStorage.getItem('INLINE_DATA') || '[]');
+
+        // Load selected store data
+        function loadStoreData() {
+            const storeData = localStorage.getItem('selectedStore');
+            if (storeData) {
+                selectedStore = JSON.parse(storeData);
+            } else {
+                const realStores = localStorage.getItem('realStores');
+                if (realStores) {
+                    const stores = JSON.parse(realStores);
+                    if (stores.length > 0) {
+                        selectedStore = stores[0];
+                        localStorage.setItem('selectedStore', JSON.stringify(selectedStore));
+                    }
+                }
+            }
+            updateStoreInfo();
+        }
+
+        // Update store information on the page
+        function updateStoreInfo() {
+            if (!selectedStore) return;
+
+            // Update logo - show real logo if available
+            const storeLogoImg = document.getElementById('storeLogoImg');
+            const storeLogoImage = document.getElementById('storeLogoImage');
+            const defaultLogo = document.getElementById('defaultLogo');
+            
+            if (selectedStore.logo) {
+                // Show real logo
+                storeLogoImage.src = selectedStore.logo;
+                storeLogoImage.alt = `${selectedStore.name} logo`;
+                storeLogoImg.style.display = 'flex';
+                defaultLogo.style.display = 'none';
+                
+                // Handle image load error
+                storeLogoImage.onerror = function() {
+                    storeLogoImg.style.display = 'none';
+                    defaultLogo.style.display = 'block';
+                    defaultLogo.innerHTML = selectedStore.name.charAt(0);
+                };
+            } else {
+                // Show text logo
+                storeLogoImg.style.display = 'none';
+                defaultLogo.style.display = 'block';
+                defaultLogo.innerHTML = selectedStore.name.charAt(0);
+            }
+
+            // Update store name and address
+            const storeNameElement = document.getElementById('storeName');
+            storeNameElement.textContent = selectedStore.name || selectedStore.shortName || '';
+            const addressElement = document.getElementById('storeAddress');
+            addressElement.textContent = selectedStore.address || selectedStore.location || '';
+
+            // Fill order summary from first available item if exists
+            const orderSummary = document.getElementById('orderSummary');
+            orderSummary.innerHTML = '';
+            const first = (selectedStore.items && selectedStore.items[0]) || null;
+            if (first) {
+                const LOCALE = 'en-GB';
+                const col1 = document.createElement('div');
+                col1.className = 'summary-section';
+                const dateLabel = document.createElement('div');
+                dateLabel.className = 'summary-label';
+                dateLabel.textContent = 'DATE';
+                const dateValue = document.createElement('div');
+                dateValue.className = 'summary-value';
+                const interval = first.pickup_interval;
+                const start = interval && interval.start ? new Date(interval.start) : null;
+                dateValue.textContent = start ? start.toLocaleDateString(LOCALE, { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+                const bagLabel = document.createElement('div');
+                bagLabel.className = 'summary-label';
+                bagLabel.style.marginTop = '16px';
+                bagLabel.textContent = 'SURPRISE BAG';
+                const bagValue = document.createElement('div');
+                bagValue.className = 'summary-value';
+                bagValue.textContent = `1x ${first.name || 'Bag'}`;
+                col1.appendChild(dateLabel);
+                col1.appendChild(dateValue);
+                col1.appendChild(bagLabel);
+                col1.appendChild(bagValue);
+
+                const col2 = document.createElement('div');
+                col2.className = 'summary-section';
+                const timeLabel = document.createElement('div');
+                timeLabel.className = 'summary-label';
+                timeLabel.textContent = 'COLLECTION TIME';
+                const timeValue = document.createElement('div');
+                timeValue.className = 'summary-value bold';
+                const end = interval && interval.end ? new Date(interval.end) : null;
+                const fmt = d => d ? d.toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit', hour12: false }) : '';
+                timeValue.textContent = `${fmt(start)} - ${fmt(end)}`;
+
+                const totalLabel = document.createElement('div');
+                totalLabel.className = 'summary-label';
+                totalLabel.style.marginTop = '16px';
+                totalLabel.textContent = 'TOTAL';
+                const totalValue = document.createElement('div');
+                totalValue.className = 'summary-value bold';
+                totalValue.textContent = typeof first.price === 'number' ? `£${first.price.toFixed(2)}` : '';
+                col2.appendChild(timeLabel);
+                col2.appendChild(timeValue);
+                col2.appendChild(totalLabel);
+                col2.appendChild(totalValue);
+
+                orderSummary.appendChild(col1);
+                orderSummary.appendChild(col2);
+            }
+
+            // Packaging note
+            const packagingNote = document.getElementById('packagingNote');
+            packagingNote.textContent = 'The store will provide packaging for your food, but we encourage you to bring your own bag to carry it home in.';
+        }
+
+        // Timer functionality
+        // No countdown on the button; show static action text
+
+        // Load store data when page loads
+        document.addEventListener('DOMContentLoaded', loadStoreData);
+
+        // Back button
+        document.querySelector('.back-btn').addEventListener('click', function() {
+            if (document.referrer) { history.back(); } else { window.location.href = 'home.html'; }
+        });
+
+        // Simple JavaScript for modal and swipe functionality
+        function showModal() {
+            document.getElementById('collection-modal').classList.add('show');
+        }
+
+        function hideModal() {
+            document.getElementById('collection-modal').classList.remove('show');
+        }
+
+        // Swipe functionality
+        let isDragging = false;
+        let startX = 0;
+        let currentX = 0;
+        let knob = document.getElementById('swipe-knob');
+        let track = document.getElementById('swipe-track');
+        let confirmed = false;
+
+        knob.addEventListener('mousedown', startDrag);
+        knob.addEventListener('touchstart', startDrag);
+
+        function startDrag(e) {
+            if (confirmed) return;
+            isDragging = true;
+            knob.classList.add('dragging');
+            startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+            e.preventDefault();
+        }
+
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag);
+
+        function drag(e) {
+            if (!isDragging || confirmed) return;
+            currentX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+            const deltaX = currentX - startX;
+            const maxX = track.offsetWidth - knob.offsetWidth - 8;
+            const newX = Math.min(maxX, Math.max(0, deltaX));
+            knob.style.transform = `translateX(${newX}px)`;
+            
+            if (newX >= maxX * 0.92) {
+                confirmSwipe();
+            }
+        }
+
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchend', endDrag);
+
+        function endDrag() {
+            if (!isDragging || confirmed) return;
+            isDragging = false;
+            knob.classList.remove('dragging');
+            
+            const maxX = track.offsetWidth - knob.offsetWidth - 8;
+            const currentTransform = knob.style.transform;
+            const currentX = parseFloat(currentTransform.replace('translateX(', '').replace('px)', ''));
+            
+            if (currentX < maxX * 0.92) {
+                knob.style.transform = 'translateX(0px)';
+            }
+        }
+
+        function confirmSwipe() {
+            confirmed = true;
+            track.classList.add('confirmed');
+            knob.classList.add('confirmed');
+            
+            // Replace modal body content to match the confirmation screen
+            const modalBody = document.querySelector('#collection-modal .modal-body');
+            const first = (selectedStore && selectedStore.items && selectedStore.items[0]) || null;
+            const orderCode = 'F88GWNF3C87Q0';
+            modalBody.innerHTML = `
+                <div class="modal-center">
+                    <div class="quantity-circle">${first ? '1x' : ''}</div>
+                    <div class="item-name" style="font-size:18px;font-weight:700;">${first ? (first.name || 'Bag') : 'Bag'}</div>
+                    <div style="color:#555;">${selectedStore ? selectedStore.name : ''}</div>
+                    <div style="margin-top:12px;">
+                        <span class="order-code">${orderCode}</span>
+                    </div>
+                </div>
+                <div style="border-top:1px solid #e5e7eb;margin:16px 0;"></div>
+                <div style="display:flex;align-items:center;justify-content:center;">
+                    <div class="status-icon" style="background:#0F766E;color:#fff;border:0;width:80px;height:80px;">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M20 6 9 17"/>
+                            <path d="M9 17 4 12"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="status-text" style="font-size:18px;color:#0F766E;font-weight:700;margin-top:8px;">Collection confirmed</div>
+                <div class="status-text" style="font-size:16px;color:#6b7280;margin-top:8px;text-align:center;">Show this to the store staff to collect your meal!</div>
+            `;
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('collection-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Too Good To Buy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #F8F7F5;
+            color: #1A1A1A;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+        
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            background: #F8F7F5;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .status-icons {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .signal-bar {
+            width: 16px;
+            height: 8px;
+            background: black;
+            border-radius: 2px;
+        }
+        
+        .battery {
+            width: 24px;
+            height: 12px;
+            border: 1px solid black;
+            border-radius: 2px;
+        }
+        
+        .header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .header-title {
+            flex: 1;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .logo {
+            margin-bottom: 40px;
+        }
+        
+        .logo-text {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .logo-upper {
+            color: #8B4513;
+        }
+        
+        .logo-crust {
+            color: #FFD700;
+        }
+        
+        .logo-underline {
+            width: 80px;
+            height: 3px;
+            background: #FFD700;
+            margin: 0 auto;
+        }
+        
+        .selected-store-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            margin: 0 auto 8px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .selected-store-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        
+        .welcome-text {
+            font-size: 18px;
+            color: #666666;
+            margin-bottom: 40px;
+        }
+        
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .menu-button {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: #1A1A1A;
+        }
+        
+        .menu-button:hover {
+            border-color: #00796B;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 121, 107, 0.15);
+        }
+        
+        .menu-button-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .menu-button-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .menu-button-description {
+            font-size: 14px;
+            color: #666666;
+        }
+        
+        .stores-icon {
+            background: linear-gradient(135deg, #8B4513, #FFD700);
+        }
+        
+        .order-icon {
+            background: linear-gradient(135deg, #00796B, #4CAF50);
+        }
+        
+        .selected-store {
+            background: #E0F2F1;
+            border-color: #00796B;
+            margin-top: 20px;
+        }
+        
+        .selected-store-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #00796B;
+            margin-bottom: 8px;
+        }
+        
+        .selected-store-info {
+            font-size: 14px;
+            color: #666666;
+        }
+
+        .stores-home-title {
+            margin-top: 28px;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: left;
+        }
+        .stores-home-list {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        .store-home-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            background: white;
+        }
+        .store-home-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #E0F2F1;
+            color: #00796B;
+            font-weight: 700;
+        }
+        .store-home-logo img { width: 100%; height: 100%; object-fit: contain; }
+        .store-home-info { flex: 1; text-align: left; }
+        .store-home-name { font-weight: 600; }
+        .store-home-address { font-size: 12px; color: #666; }
+
+        /* Modals and forms */
+        .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:50; }
+        .modal.show { display:flex; align-items:flex-end; justify-content:center; }
+        .modal-content { background:#fff; width:100%; max-width:400px; border-radius:16px 16px 0 0; padding:16px 12px; max-height:85vh; overflow-y:auto; }
+        .modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+        .modal-title { font-weight:700; }
+        .close-btn { background:none; border:none; font-size:20px; cursor:pointer; color:#666; }
+        .form-grid { display:grid; grid-template-columns:1fr; gap:12px; margin-top:8px; }
+        .form-grid label { font-size:12px; color:#666; }
+        .form-grid input, .form-grid textarea { width:100%; padding:10px; border:1px solid #e5e7eb; border-radius:10px; font-size:14px; background:#fff; max-width:100%; }
+        .form-grid input[type="file"] { display:block; max-width:100%; }
+        .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        .row > div { min-width:0; }
+        .primary { background:#00796B; color:#fff; border:none; border-radius:12px; padding:12px; font-weight:700; cursor:pointer; }
+        .secondary { background:#fff; color:#1A1A1A; border:1px solid #e5e7eb; border-radius:12px; padding:10px; cursor:pointer; }
+        .file-input-wrapper { display:flex; flex-direction:column; gap:8px; }
+        .logo-preview { width:64px; height:64px; border-radius:12px; border:1px solid #e5e7eb; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#F8F7F5; }
+        .logo-preview img { width:100%; height:100%; object-fit:contain; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+
+        <!-- Header -->
+        <header class="header">
+            <h1 class="header-title">Too Good To Buy</h1>
+        </header>
+
+        <main class="content">
+            
+
+            <!-- Menu Buttons -->
+            <div class="menu-buttons">
+                <a href="stores.html" class="menu-button">
+                    <div class="menu-button-icon stores-icon">🏪</div>
+                    <div class="menu-button-title">Browse Stores</div>
+                    <div class="menu-button-description">Find and select your preferred store</div>
+                </a>
+
+                <a href="index.html" class="menu-button">
+                    <div class="menu-button-icon order-icon">📦</div>
+                    <div class="menu-button-title">View Order</div>
+                    <div class="menu-button-description">Check your current order details</div>
+                </a>
+
+                <button id="editOrderBtn" class="menu-button" type="button">
+                    <div class="menu-button-icon" style="background: linear-gradient(135deg, #2563EB, #60A5FA);">✏️</div>
+                    <div class="menu-button-title">Edit Order</div>
+                    <div class="menu-button-description">Change bag name, price and time</div>
+                </button>
+
+                <button id="addStoreBtn" class="menu-button" type="button">
+                    <div class="menu-button-icon" style="background: linear-gradient(135deg, #9333EA, #EC4899);">➕</div>
+                    <div class="menu-button-title">Add Store</div>
+                    <div class="menu-button-description">Create a new store with logo</div>
+                </button>
+
+            </div>
+
+            
+        </main>
+    </div>
+
+    <script>
+        // Inline data so the app works directly from local files without fetch
+        const TGTG_DATA = [{"item": {"item_id": "641662", "item_price": {"code": "GBP", "minor_units": 499, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 1260, "decimals": 2}, "cover_picture": {"picture_id": "38218363893750624", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/29c29d64-def2-4dec-98c2-cd5ea28c9cd1.jpg", "is_automatically_created": false}, "logo_picture": {"picture_id": "639133", "current_url": "https://images.tgtg.ninja/itembulkimport/logo/46240/60ec99ba-4272-4ec8-a889-da6a6b487202_thumb.png", "is_automatically_created": false}, "name": "Afternoon Bag", "description": "New and improved offering! Enjoy a delicious Upper Crust Surprise Bag, now including 3 or more baguettes baked and prepared in-store each day.\n\nBaguettes are Upper Crust's specialty. Morning baguettes. Midday baguettes. Anytime-you-crave-it baguettes. For more details about the product range, please visit https://uppercrust.co.uk/menu/", "subtitle": "", "food_handling_instructions": "", "can_user_supply_packaging": false, "packaging_option": "CANT_BRING_ANYTHING", "collection_info": "", "diet_categories": [], "item_category": "MEAL", "buffet": false, "positive_rating_reasons": ["POSITIVE_FEEDBACK_QUICK_COLLECTION", "POSITIVE_FEEDBACK_GREAT_VALUE", "POSITIVE_FEEDBACK_FRIENDLY_STAFF", "POSITIVE_FEEDBACK_DELICIOUS_FOOD", "POSITIVE_FEEDBACK_GREAT_QUANTITY", "POSITIVE_FEEDBACK_GREAT_VARIETY"], "average_overall_rating": {"average_overall_rating": 3.2857142857142856, "rating_count": 42, "month_count": 6, "average_collection_experience_rating": 4.111111111111111, "average_food_quality_rating": 3.4, "average_contents_variety_rating": 3.111111111111111, "average_food_quantity_rating": 3.3055555555555554}, "price_info": {"type": "gradual_lower_price", "is_recurring": true, "is_personal": false}, "favorite_count": 0}, "store": {"store_id": "530547", "store_name": "Upper Crust", "branch": "Watford Junction", "description": "At Upper Crust they make freshly baked baguettes filled with mouth-watering ingredients and pride themselves on fast efficient service.", "tax_identifier": "GB884257978", "website": "", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "Watford Junction Railway Station, Station Rd, Watford WD17 1EU, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3965952, "latitude": 51.6637713}}, "logo_picture": {"picture_id": "506271", "current_url": "https://images.tgtg.ninja/storebulkimport/logo/27163/9645ae1b-2b75-447a-bded-033ffd68b5fe_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.30296938619204256, "cover_picture": {"picture_id": "38218363893750624", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/29c29d64-def2-4dec-98c2-cd5ea28c9cd1.jpg", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Upper Crust - Watford Junction (Afternoon Bag)", "pickup_interval": {"start": "2025-09-07T13:00:00Z", "end": "2025-09-07T13:30:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "Watford Junction Railway Station, Station Rd, Watford WD17 1EU, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3965952, "latitude": 51.6637713}}, "purchase_end": "2025-09-07T13:30:00Z", "items_available": 5, "distance": 0.30296938619204256, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [], "item_card": {"item_card_type": "DYNAMIC_PRICE", "item_card_text": "Dynamic price"}}, {"item": {"item_id": "502034", "item_price": {"code": "GBP", "minor_units": 319, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 1260, "decimals": 2}, "cover_picture": {"picture_id": "38218363893750624", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/29c29d64-def2-4dec-98c2-cd5ea28c9cd1.jpg", "is_automatically_created": false}, "logo_picture": {"picture_id": "506271", "current_url": "https://images.tgtg.ninja/storebulkimport/logo/27163/9645ae1b-2b75-447a-bded-033ffd68b5fe_thumb.png", "is_automatically_created": false}, "name": "Evening Bag", "description": "New and improved offering! Enjoy a delicious Upper Crust Surprise Bag, now including 3 or more baguettes baked and prepared in-store each day.\n\nBaguettes are Upper Crust's specialty. Morning baguettes. Midday baguettes. Anytime-you-crave-it baguettes. For more details about the product range, please visit https://uppercrust.co.uk/menu/", "subtitle": "", "food_handling_instructions": "", "can_user_supply_packaging": false, "packaging_option": "BAG_ALLOWED", "collection_info": "", "diet_categories": [], "item_category": "MEAL", "buffet": false, "positive_rating_reasons": ["POSITIVE_FEEDBACK_GREAT_VALUE", "POSITIVE_FEEDBACK_QUICK_COLLECTION", "POSITIVE_FEEDBACK_FRIENDLY_STAFF", "POSITIVE_FEEDBACK_GREAT_QUANTITY", "POSITIVE_FEEDBACK_DELICIOUS_FOOD", "POSITIVE_FEEDBACK_GREAT_VARIETY"], "average_overall_rating": {"average_overall_rating": 4.411764705882353, "rating_count": 34, "month_count": 6, "average_collection_experience_rating": 4.833333333333333, "average_food_quality_rating": 4.566666666666666, "average_contents_variety_rating": 4.5, "average_food_quantity_rating": 4.517241379310345}, "price_info": {"type": "gradual_lower_price", "is_recurring": true, "is_personal": false}, "favorite_count": 0}, "store": {"store_id": "530547", "store_name": "Upper Crust", "branch": "Watford Junction", "description": "At Upper Crust they make freshly baked baguettes filled with mouth-watering ingredients and pride themselves on fast efficient service.", "tax_identifier": "GB884257978", "website": "", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "Watford Junction Railway Station, Station Rd, Watford WD17 1EU, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3965952, "latitude": 51.6637713}}, "logo_picture": {"picture_id": "506271", "current_url": "https://images.tgtg.ninja/storebulkimport/logo/27163/9645ae1b-2b75-447a-bded-033ffd68b5fe_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.30296938619204256, "cover_picture": {"picture_id": "38218363893750624", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/29c29d64-def2-4dec-98c2-cd5ea28c9cd1.jpg", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Upper Crust - Watford Junction (Evening Bag)", "pickup_interval": {"start": "2025-09-06T16:00:00Z", "end": "2025-09-06T16:30:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "Watford Junction Railway Station, Station Rd, Watford WD17 1EU, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3965952, "latitude": 51.6637713}}, "purchase_end": "2025-09-06T16:30:00Z", "items_available": 3, "distance": 0.30296938619204256, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "ENDING_SOON", "short_text": "Ending soon", "variant": "ENDING_SOON"}], "item_card": {"item_card_type": "DYNAMIC_PRICE", "item_card_text": "Dynamic price"}}, {"item": {"item_id": "641663", "item_price": {"code": "GBP", "minor_units": 499, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 1260, "decimals": 2}, "cover_picture": {"picture_id": "38218363893750624", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/29c29d64-def2-4dec-98c2-cd5ea28c9cd1.jpg", "is_automatically_created": false}, "logo_picture": {"picture_id": "639133", "current_url": "https://images.tgtg.ninja/itembulkimport/logo/46240/60ec99ba-4272-4ec8-a889-da6a6b487202_thumb.png", "is_automatically_created": false}, "name": "Lunch Bag", "description": "New and improved offering! Enjoy a delicious Upper Crust Surprise Bag, now including 3 or more baguettes baked and prepared in-store each day.\n\nBaguettes are Upper Crust's specialty. Morning baguettes. Midday baguettes. Anytime-you-crave-it baguettes. For more details about the product range, please visit https://uppercrust.co.uk/menu/", "subtitle": "", "can_user_supply_packaging": false, "packaging_option": "CANT_BRING_ANYTHING", "diet_categories": [], "item_category": "MEAL", "buffet": false, "positive_rating_reasons": ["POSITIVE_FEEDBACK_GREAT_VALUE", "POSITIVE_FEEDBACK_QUICK_COLLECTION", "POSITIVE_FEEDBACK_GREAT_QUANTITY", "POSITIVE_FEEDBACK_FRIENDLY_STAFF", "POSITIVE_FEEDBACK_DELICIOUS_FOOD", "POSITIVE_FEEDBACK_GREAT_VARIETY"], "average_overall_rating": {"average_overall_rating": 3.9056603773584904, "rating_count": 53, "month_count": 6, "average_collection_experience_rating": 4.386363636363637, "average_food_quality_rating": 3.7142857142857144, "average_contents_variety_rating": 3.813953488372093, "average_food_quantity_rating": 4.023809523809524}, "price_info": {"type": "gradual_lower_price", "is_recurring": true, "is_personal": false}, "favorite_count": 0}, "store": {"store_id": "530547", "store_name": "Upper Crust", "branch": "Watford Junction", "description": "At Upper Crust they make freshly baked baguettes filled with mouth-watering ingredients and pride themselves on fast efficient service.", "tax_identifier": "GB884257978", "website": "", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "Watford Junction Railway Station, Station Rd, Watford WD17 1EU, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3965952, "latitude": 51.6637713}}, "logo_picture": {"picture_id": "506271", "current_url": "https://images.tgtg.ninja/storebulkimport/logo/27163/9645ae1b-2b75-447a-bded-033ffd68b5fe_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.30296938619204256, "cover_picture": {"picture_id": "38218363893750624", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/29c29d64-def2-4dec-98c2-cd5ea28c9cd1.jpg", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Upper Crust - Watford Junction (Lunch Bag)", "pickup_interval": {"start": "2025-09-07T11:00:00Z", "end": "2025-09-07T11:30:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "Watford Junction Railway Station, Station Rd, Watford WD17 1EU, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3965952, "latitude": 51.6637713}}, "purchase_end": "2025-09-07T11:30:00Z", "items_available": 3, "distance": 0.30296938619204256, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [], "item_card": {"item_card_type": "DYNAMIC_PRICE", "item_card_text": "Dynamic price"}}, {"item": {"item_id": "638455", "item_price": {"code": "GBP", "minor_units": 499, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 1260, "decimals": 2}, "cover_picture": {"picture_id": "38218363893750624", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/29c29d64-def2-4dec-98c2-cd5ea28c9cd1.jpg", "is_automatically_created": false}, "logo_picture": {"picture_id": "639133", "current_url": "https://images.tgtg.ninja/itembulkimport/logo/46240/60ec99ba-4272-4ec8-a889-da6a6b487202_thumb.png", "is_automatically_created": false}, "name": "Morning Bag", "description": "New and improved offering! Enjoy a delicious Upper Crust Surprise Bag, now including 3 or more baguettes baked and prepared in-store each day.\n\nBaguettes are Upper Crust's specialty. Morning baguettes. Midday baguettes. Anytime-you-crave-it baguettes. For more details about the product range, please visit https://uppercrust.co.uk/menu/", "subtitle": "", "can_user_supply_packaging": false, "packaging_option": "CANT_BRING_ANYTHING", "diet_categories": [], "item_category": "MEAL", "buffet": false, "positive_rating_reasons": ["POSITIVE_FEEDBACK_QUICK_COLLECTION", "POSITIVE_FEEDBACK_GREAT_VALUE", "POSITIVE_FEEDBACK_GREAT_QUANTITY", "POSITIVE_FEEDBACK_FRIENDLY_STAFF", "POSITIVE_FEEDBACK_DELICIOUS_FOOD", "POSITIVE_FEEDBACK_GREAT_VARIETY"], "average_overall_rating": {"average_overall_rating": 4.0, "rating_count": 40, "month_count": 6, "average_collection_experience_rating": 4.1891891891891895, "average_food_quality_rating": 4.194444444444445, "average_contents_variety_rating": 4.081081081081081, "average_food_quantity_rating": 4.081081081081081}, "price_info": {"type": "gradual_lower_price", "is_recurring": true, "is_personal": false}, "favorite_count": 0}, "store": {"store_id": "530547", "store_name": "Upper Crust", "branch": "Watford Junction", "description": "At Upper Crust they make freshly baked baguettes filled with mouth-watering ingredients and pride themselves on fast efficient service.", "tax_identifier": "GB884257978", "website": "", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "Watford Junction Railway Station, Station Rd, Watford WD17 1EU, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3965952, "latitude": 51.6637713}}, "logo_picture": {"picture_id": "506271", "current_url": "https://images.tgtg.ninja/storebulkimport/logo/27163/9645ae1b-2b75-447a-bded-033ffd68b5fe_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.30296938619204256, "cover_picture": {"picture_id": "38218363893750624", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/29c29d64-def2-4dec-98c2-cd5ea28c9cd1.jpg", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Upper Crust - Watford Junction (Morning Bag)", "pickup_interval": {"start": "2025-09-07T09:00:00Z", "end": "2025-09-07T09:30:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "Watford Junction Railway Station, Station Rd, Watford WD17 1EU, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3965952, "latitude": 51.6637713}}, "purchase_end": "2025-09-07T09:30:00Z", "items_available": 3, "distance": 0.30296938619204256, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [], "item_card": {"item_card_type": "DYNAMIC_PRICE", "item_card_text": "Dynamic price"}}, {"item": {"item_id": "129209866097623648", "item_price": {"code": "GBP", "minor_units": 299, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 900, "decimals": 2}, "cover_picture": {"picture_id": "129208896245434944", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/129208657521684608/6c9dbc52-d9bd-4601-a436-31e9dc001122.jpg", "is_automatically_created": false}, "logo_picture": {"picture_id": "129208895507244864", "current_url": "https://images.tgtg.ninja/itembulkimport/logo/129208657521684608/2ee9043e-18fb-4774-a085-727f793b346c_thumb.png", "is_automatically_created": false}, "name": "Sweet & Pastry Bag", "description": "Rescue from a selection of our delicious sweet range, such as pastries, cakes or muffins. Remember, the contents of your Surprise Bag depend on which items haven't sold that day, so it's a surprise until you pick it up.", "subtitle": "", "can_user_supply_packaging": false, "packaging_option": "BAG_ALLOWED", "diet_categories": [], "item_category": "BAKED_GOODS", "buffet": false, "positive_rating_reasons": [], "favorite_count": 0}, "store": {"store_id": "904611", "store_name": "Costa Coffee", "branch": "Watford Junction Station", "description": "", "tax_identifier": "GB310031975", "website": "https://www.costa.co.uk", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "Station Rd, Watford WD17 1EU, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3960678, "latitude": 51.6636753}}, "logo_picture": {"picture_id": "717049", "current_url": "https://images.tgtg.ninja/storebulkimport/logo/63211/7d562efe-6787-4c49-a8b0-63bd5e0c06ae_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.33371225172165697, "cover_picture": {"picture_id": "129208896245434944", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/129208657521684608/6c9dbc52-d9bd-4601-a436-31e9dc001122.jpg", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Costa Coffee - Watford Junction Station (Sweet & Pastry Bag)", "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "Station Rd, Watford WD17 1EU, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3960678, "latitude": 51.6636753}}, "items_available": 0, "distance": 0.33371225172165697, "favorite": false, "subscribed_to_notification": false, "in_sales_window": false, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "NOTHING_TO_SAVE_TODAY", "short_text": "Nothing today", "long_text": "Nothing today", "variant": "NOTHING_TO_SAVE_TODAY"}]}, {"item": {"item_id": "117683354516704064", "item_price": {"code": "GBP", "minor_units": 460, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 1400, "decimals": 2}, "cover_picture": {"picture_id": "117975864772217184", "current_url": "https://images.tgtg.ninja/item/cover/3f1f53cc-eddd-45d3-bd3d-083d5e66366c.jpg", "is_automatically_created": false}, "logo_picture": {"picture_id": "117703580474970848", "current_url": "https://images.tgtg.ninja/store/9e746173-94f1-4702-8857-f7897939b1fb_thumb.png", "is_automatically_created": false}, "name": "Vegetarian Surprise Bag", "description": "Save a surprise bag filled with Lebanese cuisine this may include a main dish, starter, side dishes and/or other prepared food.", "subtitle": "", "food_handling_instructions": "", "can_user_supply_packaging": false, "packaging_option": "BAG_ALLOWED", "collection_info": "", "diet_categories": ["VEGETARIAN"], "item_category": "MEAL", "buffet": false, "positive_rating_reasons": [], "average_overall_rating": {"average_overall_rating": 3.9791666666666665, "rating_count": 48, "month_count": 6, "average_collection_experience_rating": 4.230769230769231, "average_food_quality_rating": 4.108108108108108, "average_contents_variety_rating": 3.945945945945946, "average_food_quantity_rating": 4.0}, "favorite_count": 0}, "store": {"store_id": "117660379006275232", "store_name": "Taouk", "branch": "Watford", "description": "", "tax_identifier": "", "website": "https://taoukwatford.co.uk/", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "116 The Parade, High St, Watford WD17 1BD, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.4017952, "latitude": 51.6590901}}, "logo_picture": {"picture_id": "117703580474970848", "current_url": "https://images.tgtg.ninja/store/9e746173-94f1-4702-8857-f7897939b1fb_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.4165993928380491, "cover_picture": {"picture_id": "117975864772217184", "current_url": "https://images.tgtg.ninja/item/cover/3f1f53cc-eddd-45d3-bd3d-083d5e66366c.jpg", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Taouk - Watford (Vegetarian Surprise Bag)", "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "116 The Parade, High St, Watford WD17 1BD, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.4017952, "latitude": 51.6590901}}, "items_available": 0, "distance": 0.4165993928380491, "favorite": false, "subscribed_to_notification": false, "in_sales_window": false, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "NOTHING_TO_SAVE_TODAY", "short_text": "Nothing today", "long_text": "Nothing today", "variant": "NOTHING_TO_SAVE_TODAY"}]}, {"item": {"item_id": "773800", "item_price": {"code": "GBP", "minor_units": 399, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 1200, "decimals": 2}, "cover_picture": {"picture_id": "763785", "current_url": "https://images.tgtg.ninja/item/cover/1a0d1bd7-d751-4c74-bc26-9904f51d7b55.jpg", "is_automatically_created": false}, "logo_picture": {"picture_id": "766407", "current_url": "https://images.tgtg.ninja/store/ab6c1bc3-d783-4234-bf14-f99dde43706e.png", "is_automatically_created": false}, "name": "Surprise Bag", "description": "Rescue a Surprise Bag which contains grocery items as sweets, snacks, dairy products, cooked meat products, cupboard essential or fruit and veg. The selection in the bag is random depending on what it is available on the day of collection.", "subtitle": "", "food_handling_instructions": "", "can_user_supply_packaging": false, "packaging_option": "BAG_ALLOWED", "collection_info": "", "diet_categories": [], "item_category": "GROCERIES", "buffet": false, "positive_rating_reasons": ["POSITIVE_FEEDBACK_GREAT_VALUE", "POSITIVE_FEEDBACK_FRIENDLY_STAFF", "POSITIVE_FEEDBACK_GREAT_QUANTITY", "POSITIVE_FEEDBACK_QUICK_COLLECTION", "POSITIVE_FEEDBACK_DELICIOUS_FOOD", "POSITIVE_FEEDBACK_GREAT_VARIETY"], "average_overall_rating": {"average_overall_rating": 3.9285714285714284, "rating_count": 14, "month_count": 6, "average_collection_experience_rating": 4.0, "average_food_quality_rating": 3.6, "average_contents_variety_rating": 4.0, "average_food_quantity_rating": 4.0}, "favorite_count": 0}, "store": {"store_id": "755760", "store_name": "Favorit supermarket", "branch": "Watford", "description": "", "tax_identifier": "GB197226087", "website": "", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "High St, The Parade, Watford WD17 1AU, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.4007089, "latitude": 51.6586025}}, "logo_picture": {"picture_id": "766407", "current_url": "https://images.tgtg.ninja/store/ab6c1bc3-d783-4234-bf14-f99dde43706e.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.4636850073625281, "cover_picture": {"picture_id": "763785", "current_url": "https://images.tgtg.ninja/item/cover/1a0d1bd7-d751-4c74-bc26-9904f51d7b55.jpg", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Favorit supermarket - Watford (Surprise Bag)", "pickup_interval": {"start": "2025-09-06T16:00:00Z", "end": "2025-09-06T19:00:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "High St, The Parade, Watford WD17 1AU, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.4007089, "latitude": 51.6586025}}, "purchase_end": "2025-09-06T19:00:00Z", "items_available": 2, "distance": 0.4636850073625281, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "X_ITEMS_LEFT", "short_text": "2 left", "long_text": "2 left", "variant": "X_ITEMS_LEFT"}]}, {"item": {"item_id": "41453", "item_price": {"code": "GBP", "minor_units": 395, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 1185, "decimals": 2}, "cover_picture": {"picture_id": "973163", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/122392/e9725945-5047-4b6b-b70d-ef4ad5136953.png", "is_automatically_created": false}, "logo_picture": {"picture_id": "70778", "current_url": "https://images.tgtg.ninja/store/8d056889-0c66-4b77-bda8-1c54c0c9c0ec_thumb.png", "is_automatically_created": false}, "name": "Cold Food Bag", "description": "Delicious bakes such as bread and sweet cakes, or food-to-go such as salads and freshly filled baguettes. Remember, the contents of your Surprise Bag depends on which items haven't sold that day, so it's a surprise until you pick it up.", "subtitle": "", "can_user_supply_packaging": false, "packaging_option": "BAG_ALLOWED", "collection_info": "", "diet_categories": [], "item_category": "BAKED_GOODS", "buffet": false, "positive_rating_reasons": ["POSITIVE_FEEDBACK_GREAT_VALUE", "POSITIVE_FEEDBACK_FRIENDLY_STAFF", "POSITIVE_FEEDBACK_GREAT_QUANTITY", "POSITIVE_FEEDBACK_QUICK_COLLECTION", "POSITIVE_FEEDBACK_DELICIOUS_FOOD", "POSITIVE_FEEDBACK_GREAT_VARIETY"], "average_overall_rating": {"average_overall_rating": 4.744897959183674, "rating_count": 98, "month_count": 6, "average_collection_experience_rating": 4.816091954022989, "average_food_quality_rating": 4.752941176470588, "average_contents_variety_rating": 4.593023255813954, "average_food_quantity_rating": 4.658823529411765}, "favorite_count": 0}, "store": {"store_id": "40882", "store_name": "Wenzel's - Watford Parade", "branch": "London", "description": "Quality baked goods are waiting to be rescued! Take home freshly made baguettes with a variety of fillings, mouth-watering salads, sweet treats and maybe even a delicious loaf of bread. It's all Too Good To Go!  \nWenzel's have been delivering high-quality products at affordable prices to their North London patrons since 1975.", "tax_identifier": "GB985267176", "website": "", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "98 The Parade, High St, Watford WD17 1AW, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.400351, "latitude": 51.6582246}}, "logo_picture": {"picture_id": "70778", "current_url": "https://images.tgtg.ninja/store/8d056889-0c66-4b77-bda8-1c54c0c9c0ec_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.5062171447739308, "cover_picture": {"picture_id": "973163", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/122392/e9725945-5047-4b6b-b70d-ef4ad5136953.png", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Wenzel's - Watford Parade - London (Cold Food Bag)", "pickup_interval": {"start": "2025-09-06T16:15:00Z", "end": "2025-09-06T16:30:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "98 The Parade, High St, Watford WD17 1AW, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.400351, "latitude": 51.6582246}}, "purchase_end": "2025-09-06T16:30:00Z", "items_available": 0, "sold_out_at": "2025-09-06T05:28:15Z", "distance": 0.5062171447739308, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "SOLD_OUT", "short_text": "Sold out", "variant": "SOLD_OUT"}]}, {"item": {"item_id": "613056", "item_price": {"code": "GBP", "minor_units": 475, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 1425, "decimals": 2}, "cover_picture": {"picture_id": "973163", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/122392/e9725945-5047-4b6b-b70d-ef4ad5136953.png", "is_automatically_created": false}, "logo_picture": {"picture_id": "70778", "current_url": "https://images.tgtg.ninja/store/8d056889-0c66-4b77-bda8-1c54c0c9c0ec_thumb.png", "is_automatically_created": false}, "name": "Hot Food Bag", "description": "A random selection of our hot slices, ranging from delicious cheese and onion slices to our tasty pizzas! Remember, the contents of your Surprise Bag depends on which items haven't sold that day, so it's a surprise until you pick it up.", "subtitle": "", "can_user_supply_packaging": false, "packaging_option": "BAG_ALLOWED", "diet_categories": [], "item_category": "BAKED_GOODS", "buffet": false, "positive_rating_reasons": ["POSITIVE_FEEDBACK_GREAT_VALUE", "POSITIVE_FEEDBACK_GREAT_QUANTITY", "POSITIVE_FEEDBACK_FRIENDLY_STAFF", "POSITIVE_FEEDBACK_QUICK_COLLECTION", "POSITIVE_FEEDBACK_DELICIOUS_FOOD", "POSITIVE_FEEDBACK_GREAT_VARIETY"], "average_overall_rating": {"average_overall_rating": 4.38, "rating_count": 50, "month_count": 6, "average_collection_experience_rating": 4.571428571428571, "average_food_quality_rating": 4.5, "average_contents_variety_rating": 4.358974358974359, "average_food_quantity_rating": 4.5}, "favorite_count": 0}, "store": {"store_id": "40882", "store_name": "Wenzel's - Watford Parade", "branch": "London", "description": "Quality baked goods are waiting to be rescued! Take home freshly made baguettes with a variety of fillings, mouth-watering salads, sweet treats and maybe even a delicious loaf of bread. It's all Too Good To Go!  \nWenzel's have been delivering high-quality products at affordable prices to their North London patrons since 1975.", "tax_identifier": "GB985267176", "website": "", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "98 The Parade, High St, Watford WD17 1AW, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.400351, "latitude": 51.6582246}}, "logo_picture": {"picture_id": "70778", "current_url": "https://images.tgtg.ninja/store/8d056889-0c66-4b77-bda8-1c54c0c9c0ec_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.5062171447739308, "cover_picture": {"picture_id": "973163", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/122392/e9725945-5047-4b6b-b70d-ef4ad5136953.png", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Wenzel's - Watford Parade - London (Hot Food Bag)", "pickup_interval": {"start": "2025-09-06T16:15:00Z", "end": "2025-09-06T16:30:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "98 The Parade, High St, Watford WD17 1AW, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.400351, "latitude": 51.6582246}}, "purchase_end": "2025-09-06T16:30:00Z", "items_available": 0, "sold_out_at": "2025-09-06T12:35:44Z", "distance": 0.5062171447739308, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "SOLD_OUT", "short_text": "Sold out", "variant": "SOLD_OUT"}]}, {"item": {"item_id": "1165774", "item_price": {"code": "GBP", "minor_units": 639, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 1600, "decimals": 2}, "cover_picture": {"picture_id": "1088757", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/152531/f8a8ed01-b3a4-48bf-af79-440be3af1072.jpg", "is_automatically_created": false}, "logo_picture": {"picture_id": "1052747", "current_url": "https://images.tgtg.ninja/storebulkimport/logo/144630/83fa4e0a-a92e-4038-94dc-6a83edb736fe_thumb.png", "is_automatically_created": false}, "name": "Breakfast Buffet Surprise Bag", "description": "Save a delicious bag from Leonardo Hotels breakfast buffet. Expect English breakfast classics and you may even receive a few extras from their continental offering depending on what is leftover.", "subtitle": "", "can_user_supply_packaging": false, "packaging_option": "MUST_BRING_BAG", "collection_info": "When you arrive please go to the reception where our team will be happy to help you collect your Suprise Bag.", "diet_categories": [], "item_category": "MEAL", "buffet": false, "positive_rating_reasons": ["POSITIVE_FEEDBACK_FRIENDLY_STAFF", "POSITIVE_FEEDBACK_GREAT_QUANTITY", "POSITIVE_FEEDBACK_DELICIOUS_FOOD", "POSITIVE_FEEDBACK_QUICK_COLLECTION", "POSITIVE_FEEDBACK_GREAT_VALUE"], "average_overall_rating": {"average_overall_rating": 4.076923076923077, "rating_count": 13, "month_count": 6, "average_collection_experience_rating": 4.166666666666667, "average_food_quality_rating": 4.454545454545454, "average_contents_variety_rating": 4.2727272727272725, "average_food_quantity_rating": 4.2727272727272725}, "price_info": {"type": "gradual_lower_price", "is_recurring": true, "is_personal": false}, "favorite_count": 0}, "store": {"store_id": "1041689", "store_name": "Leonardo Hotel Watford", "description": "", "tax_identifier": "GB287154183", "website": "", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "Clarendon Rd, Watford WD17 1JA, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3972857, "latitude": 51.6581919}}, "logo_picture": {"picture_id": "1052747", "current_url": "https://images.tgtg.ninja/storebulkimport/logo/144630/83fa4e0a-a92e-4038-94dc-6a83edb736fe_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.5606302776849276, "cover_picture": {"picture_id": "1088757", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/152531/f8a8ed01-b3a4-48bf-af79-440be3af1072.jpg", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Leonardo Hotel Watford (Breakfast Buffet Surprise Bag)", "pickup_interval": {"start": "2025-09-07T09:30:00Z", "end": "2025-09-07T10:00:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "Clarendon Rd, Watford WD17 1JA, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3972857, "latitude": 51.6581919}}, "purchase_end": "2025-09-07T09:50:00Z", "items_available": 1, "distance": 0.5606302776849276, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "X_ITEMS_LEFT", "short_text": "1 left", "long_text": "1 left", "variant": "X_ITEMS_LEFT"}], "item_card": {"item_card_type": "DYNAMIC_PRICE", "item_card_text": "Dynamic price"}}, {"item": {"item_id": "118841098416418176", "item_price": {"code": "GBP", "minor_units": 300, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 900, "decimals": 2}, "cover_picture": {"picture_id": "139969796871722272", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/46a513ae-774e-4a4e-a585-0caf7b1bc3df.png", "is_automatically_created": false}, "logo_picture": {"picture_id": "139969794858472576", "current_url": "https://images.tgtg.ninja/itembulkimport/logo/200ccc91-534a-4a9b-96c9-a88772626a7c_thumb.png", "is_automatically_created": false}, "name": "Breakfast Hot Food Bag", "description": "Rescue a Surprise Bag filled with items from West Cornwall Pasty Co, such as delicious breakfast rolls or pasties.\n\nRemember, the content of the bag depends on what food is left today.", "subtitle": "", "food_handling_instructions": "", "can_user_supply_packaging": false, "packaging_option": "BAG_ALLOWED", "collection_info": "Please collect your Surprise Bag from the Shop'N Drive store", "diet_categories": [], "item_category": "MEAL", "buffet": false, "positive_rating_reasons": [], "favorite_count": 0}, "store": {"store_id": "118841097543989376", "store_name": "Shop'N Drive", "branch": "Watford", "description": "", "tax_identifier": "GB484941060", "website": "", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "112 St Albans Rd, Watford WD24 4AE, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3977022, "latitude": 51.6676851}}, "logo_picture": {"picture_id": "493433", "current_url": "https://images.tgtg.ninja/store/f214a41b-9a1c-4479-9762-2811ce33a2a8_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.5836405000630055, "cover_picture": {"picture_id": "139969796871722272", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/46a513ae-774e-4a4e-a585-0caf7b1bc3df.png", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Shop'N Drive - Watford (Breakfast Hot Food Bag)", "pickup_interval": {"start": "2025-09-07T08:30:00Z", "end": "2025-09-07T09:00:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "112 St Albans Rd, Watford WD24 4AE, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3977022, "latitude": 51.6676851}}, "purchase_end": "2025-09-07T09:00:00Z", "items_available": 1, "distance": 0.5836405000630055, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "X_ITEMS_LEFT", "short_text": "1 left", "long_text": "1 left", "variant": "X_ITEMS_LEFT"}]}, {"item": {"item_id": "118841098114410336", "item_price": {"code": "GBP", "minor_units": 300, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 900, "decimals": 2}, "cover_picture": {"picture_id": "139969336574176352", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/6c389af0-9867-4553-803c-a67a378d4c2f.png", "is_automatically_created": false}, "logo_picture": {"picture_id": "139969335299106976", "current_url": "https://images.tgtg.ninja/itembulkimport/logo/583004cf-a677-4075-af28-a5a81e8021d9_thumb.png", "is_automatically_created": false}, "name": "Lunch Hot Food Bag", "description": "Rescue a Surprise Bag filled with lunch items such as delicious Pasties, Pizza slices, Hot Dogs or other hot food items.\n\nRemember, the content of the bag depends on what food is left on the day.", "subtitle": "", "food_handling_instructions": "", "can_user_supply_packaging": false, "packaging_option": "BAG_ALLOWED", "collection_info": "Please collect your Surprise Bag from the Shop'N Drive store", "diet_categories": [], "item_category": "MEAL", "buffet": false, "positive_rating_reasons": [], "average_overall_rating": {"average_overall_rating": 4.2, "rating_count": 15, "month_count": 3, "average_collection_experience_rating": 4.357142857142857, "average_food_quality_rating": 4.071428571428571, "average_contents_variety_rating": 4.071428571428571, "average_food_quantity_rating": 4.285714285714286}, "favorite_count": 0}, "store": {"store_id": "118841097543989376", "store_name": "Shop'N Drive", "branch": "Watford", "description": "", "tax_identifier": "GB484941060", "website": "", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "112 St Albans Rd, Watford WD24 4AE, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3977022, "latitude": 51.6676851}}, "logo_picture": {"picture_id": "493433", "current_url": "https://images.tgtg.ninja/store/f214a41b-9a1c-4479-9762-2811ce33a2a8_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.5836405000630055, "cover_picture": {"picture_id": "139969336574176352", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/6c389af0-9867-4553-803c-a67a378d4c2f.png", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Shop'N Drive - Watford (Lunch Hot Food Bag)", "pickup_interval": {"start": "2025-09-07T12:30:00Z", "end": "2025-09-07T13:00:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "112 St Albans Rd, Watford WD24 4AE, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3977022, "latitude": 51.6676851}}, "purchase_end": "2025-09-07T13:00:00Z", "items_available": 1, "distance": 0.5836405000630055, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "X_ITEMS_LEFT", "short_text": "1 left", "long_text": "1 left", "variant": "X_ITEMS_LEFT"}]}, {"item": {"item_id": "21380852980390144", "item_price": {"code": "GBP", "minor_units": 299, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 1200, "decimals": 2}, "cover_picture": {"picture_id": "21380693078069664", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/21380465612575744/02c9928e-2ccc-4b22-ad9e-52082740d21f.jpg", "is_automatically_created": false}, "logo_picture": {"picture_id": "21380692339854752", "current_url": "https://images.tgtg.ninja/itembulkimport/logo/21380465612575744/bacb5e77-b250-4559-a8c6-221468e587d4_thumb.png", "is_automatically_created": false}, "name": "Cold Food (Morning)", "description": "Rescue a selection of tasty goodies from Greggs. \nSurprise Bags will vary, though all could include a mouth-watering mixture of sandwiches, bakes or sweet treats worth up to \u00a312. Made fresh in-store yesterday, you can secure these delicious treats and help prevent food waste for just \u00a32.99.", "subtitle": "", "can_user_supply_packaging": false, "packaging_option": "BAG_ALLOWED", "diet_categories": [], "item_category": "BAKED_GOODS", "buffet": false, "positive_rating_reasons": ["POSITIVE_FEEDBACK_GREAT_VALUE", "POSITIVE_FEEDBACK_GREAT_QUANTITY", "POSITIVE_FEEDBACK_FRIENDLY_STAFF", "POSITIVE_FEEDBACK_QUICK_COLLECTION", "POSITIVE_FEEDBACK_DELICIOUS_FOOD"], "average_overall_rating": {"average_overall_rating": 4.8, "rating_count": 25, "month_count": 6, "average_collection_experience_rating": 4.578947368421052, "average_food_quality_rating": 4.555555555555555, "average_contents_variety_rating": 4.473684210526316, "average_food_quantity_rating": 4.684210526315789}, "favorite_count": 0}, "store": {"store_id": "414320", "store_name": "Greggs - Watford The Pde", "description": "", "tax_identifier": "GB659880474", "website": "https://www.greggs.co.uk/", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "5 The Parade, Watford WD17 1LQ, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3981381, "latitude": 51.6569509}}, "logo_picture": {"picture_id": "https://apptoogoodtogo.com/public-cache/logo/v1/1/gp-0", "current_url": "https://apptoogoodtogo.com/public-cache/logo/v1/1/gp-0", "is_automatically_created": true}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.6706926722135719, "cover_picture": {"picture_id": "21380693078069664", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/21380465612575744/02c9928e-2ccc-4b22-ad9e-52082740d21f.jpg", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Greggs - Watford The Pde (Cold Food (Morning))", "pickup_interval": {"start": "2025-09-07T07:00:00Z", "end": "2025-09-07T08:00:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "5 The Parade, Watford WD17 1LQ, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3981381, "latitude": 51.6569509}}, "purchase_end": "2025-09-07T08:00:00Z", "items_available": 0, "sold_out_at": "2025-09-06T12:34:41Z", "distance": 0.6706926722135719, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "SOLD_OUT", "short_text": "Sold out", "variant": "SOLD_OUT"}]}, {"item": {"item_id": "406106", "item_price": {"code": "GBP", "minor_units": 299, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 800, "decimals": 2}, "cover_picture": {"picture_id": "373588", "current_url": "https://images.tgtg.ninja/storebulkimport/cover/6895/ce0cf59f-fb7f-4171-b8d7-1ae125cbd159.jpg", "is_automatically_created": false}, "logo_picture": {"picture_id": "373587", "current_url": "https://images.tgtg.ninja/storebulkimport/logo/6895/c1cf4720-8615-42cb-8a39-b20c1cc3ce00_thumb.png", "is_automatically_created": false}, "name": "Cold Food (Evening)", "description": "Rescue a selection of goodies from the nation\u2019s favourite bakery + food-on-the-go retailer! Your Surprise Bag could contain a mixture of sandwiches, bakes and sweet treats.", "subtitle": "", "can_user_supply_packaging": false, "packaging_option": "CANT_BRING_ANYTHING", "collection_info": "We are proud to freshly prepare food in our shops every day. We use many ingredients and shared equipment and whilst we manage cross contamination, we can\u2019t guarantee that our food meets allergen free levels\nIf you have any queries about allergens please check visit Greggs website at: greggs.co.uk/nutrition", "diet_categories": [], "item_category": "BAKED_GOODS", "buffet": false, "positive_rating_reasons": ["POSITIVE_FEEDBACK_GREAT_VALUE", "POSITIVE_FEEDBACK_GREAT_QUANTITY", "POSITIVE_FEEDBACK_QUICK_COLLECTION", "POSITIVE_FEEDBACK_FRIENDLY_STAFF", "POSITIVE_FEEDBACK_DELICIOUS_FOOD", "POSITIVE_FEEDBACK_GREAT_VARIETY"], "average_overall_rating": {"average_overall_rating": 4.706766917293233, "rating_count": 133, "month_count": 6, "average_collection_experience_rating": 4.8, "average_food_quality_rating": 4.715596330275229, "average_contents_variety_rating": 4.54054054054054, "average_food_quantity_rating": 4.63963963963964}, "favorite_count": 0}, "store": {"store_id": "414320", "store_name": "Greggs - Watford The Pde", "description": "", "tax_identifier": "GB659880474", "website": "https://www.greggs.co.uk/", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "5 The Parade, Watford WD17 1LQ, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3981381, "latitude": 51.6569509}}, "logo_picture": {"picture_id": "https://apptoogoodtogo.com/public-cache/logo/v1/1/gp-0", "current_url": "https://apptoogoodtogo.com/public-cache/logo/v1/1/gp-0", "is_automatically_created": true}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.6706926722135719, "cover_picture": {"picture_id": "373588", "current_url": "https://images.tgtg.ninja/storebulkimport/cover/6895/ce0cf59f-fb7f-4171-b8d7-1ae125cbd159.jpg", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Greggs - Watford The Pde (Cold Food (Evening))", "pickup_interval": {"start": "2025-09-06T17:30:00Z", "end": "2025-09-06T18:00:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "5 The Parade, Watford WD17 1LQ, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3981381, "latitude": 51.6569509}}, "purchase_end": "2025-09-06T18:00:00Z", "items_available": 0, "sold_out_at": "2025-09-06T14:58:10Z", "distance": 0.6706926722135719, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "SOLD_OUT", "short_text": "Sold out", "variant": "SOLD_OUT"}]}, {"item": {"item_id": "550776", "item_price": {"code": "GBP", "minor_units": 500, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 1500, "decimals": 2}, "cover_picture": {"picture_id": "553471", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/32070/268bf6d7-d6e7-4108-9e28-cde8d1ed541a.jpg", "is_automatically_created": false}, "logo_picture": {"picture_id": "553470", "current_url": "https://images.tgtg.ninja/itembulkimport/logo/32070/a9a4f223-5f2f-4d6e-ad2e-6fdc9d93c0a9_thumb.png", "is_automatically_created": false}, "name": "Chilled & Bakery", "description": "Rescue a selection of freshly made items from Pret\u2019s chilled + bakery menu, which may include baguettes, sandwiches, salads, pots, bowls, wraps & croissants.\n\n50% of the profits of this Surprise Bag go to support the Pret Foundation in our mission to alleviate poverty, homelessness and hunger.\n\nFull allergen information on order.", "subtitle": "", "food_handling_instructions": "", "can_user_supply_packaging": false, "packaging_option": "CANT_BRING_ANYTHING", "collection_info": "The collection window for this Magic Bag is after the store has closed so please have you app reservation ready to show the team and knock on the door for collection.", "diet_categories": [], "item_category": "BAKED_GOODS", "buffet": false, "positive_rating_reasons": ["POSITIVE_FEEDBACK_FRIENDLY_STAFF", "POSITIVE_FEEDBACK_QUICK_COLLECTION", "POSITIVE_FEEDBACK_DELICIOUS_FOOD", "POSITIVE_FEEDBACK_GREAT_QUANTITY", "POSITIVE_FEEDBACK_GREAT_VALUE", "POSITIVE_FEEDBACK_GREAT_VARIETY"], "average_overall_rating": {"average_overall_rating": 4.297520661157025, "rating_count": 121, "month_count": 6, "average_collection_experience_rating": 4.696078431372549, "average_food_quality_rating": 4.45, "average_contents_variety_rating": 4.05050505050505, "average_food_quantity_rating": 4.098039215686274}, "favorite_count": 0}, "store": {"store_id": "543246", "store_name": "Pret", "branch": "Watford", "description": "We can\u2019t guarantee our food is suitable for those with allergies due to a high risk of cross-contamination. Our vegan food is made to a vegan recipe but is not suitable for those with dairy and egg allergies. Magic bag may contain a mixture of vegan and non-vegan hot items. The contents of your bag will vary from day to day and will contain allergens. If you would like to know the specific allergens a product contains please check the product label. All food collected is for immediate consumption and hot food must not be reheated.", "tax_identifier": "GB425810411", "website": "", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "1 The Parade, Watford WD17 1LQ, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3979479, "latitude": 51.6568656}}, "logo_picture": {"picture_id": "526441", "current_url": "https://images.tgtg.ninja/storebulkimport/logo/29180/90cd75e1-dfb6-44cd-a519-6b1ec0800173_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.6833555992761384, "cover_picture": {"picture_id": "553471", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/32070/268bf6d7-d6e7-4108-9e28-cde8d1ed541a.jpg", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Pret - Watford (Chilled & Bakery)", "pickup_interval": {"start": "2025-09-06T16:00:00Z", "end": "2025-09-06T16:30:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "1 The Parade, Watford WD17 1LQ, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3979479, "latitude": 51.6568656}}, "purchase_end": "2025-09-06T16:30:00Z", "items_available": 0, "sold_out_at": "2025-09-06T05:42:14Z", "distance": 0.6833555992761384, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "SOLD_OUT", "short_text": "Sold out", "variant": "SOLD_OUT"}]}, {"item": {"item_id": "526769", "item_price": {"code": "GBP", "minor_units": 400, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 1200, "decimals": 2}, "cover_picture": {"picture_id": "524248", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/28260/2bb11c18-3ce7-4296-aebf-a7d8f9410915.jpg", "is_automatically_created": false}, "logo_picture": {"picture_id": "524247", "current_url": "https://images.tgtg.ninja/itembulkimport/logo/28260/71fb0eeb-bd9d-4a76-9af2-a01498ba5a90_thumb.png", "is_automatically_created": false}, "name": "Lunch Bag", "description": "Rescue a selection of freshly made items from Pret\u2019s Hot Lunch menu, which may include soup, wraps or mac n cheese. \n\n50% of the profits of this Surprise Bag go to support the Pret Foundation in our mission to alleviate poverty, homelessness and hunger.\n\nFull allergen information on order.", "subtitle": "", "food_handling_instructions": "", "can_user_supply_packaging": false, "packaging_option": "CANT_BRING_ANYTHING", "collection_info": "", "diet_categories": [], "item_category": "MEAL", "buffet": false, "positive_rating_reasons": ["POSITIVE_FEEDBACK_QUICK_COLLECTION", "POSITIVE_FEEDBACK_GREAT_VALUE", "POSITIVE_FEEDBACK_DELICIOUS_FOOD", "POSITIVE_FEEDBACK_FRIENDLY_STAFF", "POSITIVE_FEEDBACK_GREAT_QUANTITY", "POSITIVE_FEEDBACK_GREAT_VARIETY"], "average_overall_rating": {"average_overall_rating": 3.8548387096774195, "rating_count": 62, "month_count": 6, "average_collection_experience_rating": 4.32, "average_food_quality_rating": 4.5, "average_contents_variety_rating": 3.588235294117647, "average_food_quantity_rating": 3.68}, "favorite_count": 0}, "store": {"store_id": "543246", "store_name": "Pret", "branch": "Watford", "description": "We can\u2019t guarantee our food is suitable for those with allergies due to a high risk of cross-contamination. Our vegan food is made to a vegan recipe but is not suitable for those with dairy and egg allergies. Magic bag may contain a mixture of vegan and non-vegan hot items. The contents of your bag will vary from day to day and will contain allergens. If you would like to know the specific allergens a product contains please check the product label. All food collected is for immediate consumption and hot food must not be reheated.", "tax_identifier": "GB425810411", "website": "", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "1 The Parade, Watford WD17 1LQ, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3979479, "latitude": 51.6568656}}, "logo_picture": {"picture_id": "526441", "current_url": "https://images.tgtg.ninja/storebulkimport/logo/29180/90cd75e1-dfb6-44cd-a519-6b1ec0800173_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.6833555992761384, "cover_picture": {"picture_id": "524248", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/28260/2bb11c18-3ce7-4296-aebf-a7d8f9410915.jpg", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Pret - Watford (Lunch Bag)", "pickup_interval": {"start": "2025-09-07T13:00:00Z", "end": "2025-09-07T14:00:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "1 The Parade, Watford WD17 1LQ, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3979479, "latitude": 51.6568656}}, "purchase_end": "2025-09-07T14:00:00Z", "items_available": 1, "distance": 0.6833555992761384, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "X_ITEMS_LEFT", "short_text": "1 left", "long_text": "1 left", "variant": "X_ITEMS_LEFT"}]}, {"item": {"item_id": "527008", "item_price": {"code": "GBP", "minor_units": 400, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 1200, "decimals": 2}, "cover_picture": {"picture_id": "523634", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/28272/4726fac4-eafd-4967-b04b-6186732bac6f.jpg", "is_automatically_created": false}, "logo_picture": {"picture_id": "523633", "current_url": "https://images.tgtg.ninja/itembulkimport/logo/28272/a79af945-0c11-460b-af3e-b8ea05dff478_thumb.png", "is_automatically_created": false}, "name": "Dinner Bag", "description": "Rescue a selection of freshly made items from Pret\u2019s Hot Lunch menu, which may include soup, mac n cheese or a pigs in blankets pot. \n\n50% of the profits of this Surprise Bag go to support the Pret Foundation in our mission to alleviate poverty, homelessness and hunger.\n\nFull allergen information on order.", "subtitle": "", "food_handling_instructions": "", "can_user_supply_packaging": false, "packaging_option": "CANT_BRING_ANYTHING", "collection_info": "", "diet_categories": [], "item_category": "MEAL", "buffet": false, "positive_rating_reasons": ["POSITIVE_FEEDBACK_GREAT_VALUE", "POSITIVE_FEEDBACK_GREAT_QUANTITY", "POSITIVE_FEEDBACK_DELICIOUS_FOOD", "POSITIVE_FEEDBACK_FRIENDLY_STAFF", "POSITIVE_FEEDBACK_QUICK_COLLECTION", "POSITIVE_FEEDBACK_GREAT_VARIETY"], "average_overall_rating": {"average_overall_rating": 4.195652173913044, "rating_count": 46, "month_count": 6, "average_collection_experience_rating": 4.388888888888889, "average_food_quality_rating": 4.25, "average_contents_variety_rating": 3.5, "average_food_quantity_rating": 3.757575757575758}, "favorite_count": 0}, "store": {"store_id": "543246", "store_name": "Pret", "branch": "Watford", "description": "We can\u2019t guarantee our food is suitable for those with allergies due to a high risk of cross-contamination. Our vegan food is made to a vegan recipe but is not suitable for those with dairy and egg allergies. Magic bag may contain a mixture of vegan and non-vegan hot items. The contents of your bag will vary from day to day and will contain allergens. If you would like to know the specific allergens a product contains please check the product label. All food collected is for immediate consumption and hot food must not be reheated.", "tax_identifier": "GB425810411", "website": "", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "1 The Parade, Watford WD17 1LQ, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3979479, "latitude": 51.6568656}}, "logo_picture": {"picture_id": "526441", "current_url": "https://images.tgtg.ninja/storebulkimport/logo/29180/90cd75e1-dfb6-44cd-a519-6b1ec0800173_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.6833555992761384, "cover_picture": {"picture_id": "523634", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/28272/4726fac4-eafd-4967-b04b-6186732bac6f.jpg", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Pret - Watford (Dinner Bag)", "pickup_interval": {"start": "2025-09-06T15:30:00Z", "end": "2025-09-06T16:00:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "1 The Parade, Watford WD17 1LQ, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3979479, "latitude": 51.6568656}}, "purchase_end": "2025-09-06T16:00:00Z", "items_available": 0, "distance": 0.6833555992761384, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "SOLD_OUT", "short_text": "Sold out", "variant": "SOLD_OUT"}]}, {"item": {"item_id": "526642", "item_price": {"code": "GBP", "minor_units": 300, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 900, "decimals": 2}, "cover_picture": {"picture_id": "523610", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/28250/837905b7-d1ff-41ff-8e57-60f519b8c3de.jpg", "is_automatically_created": false}, "logo_picture": {"picture_id": "523609", "current_url": "https://images.tgtg.ninja/itembulkimport/logo/28250/9cd97889-63c4-4a5c-8582-e06633f48384_thumb.png", "is_automatically_created": false}, "name": "Breakfast Bag", "description": "Rescue a selection of freshly made items from Pret\u2019s Hot Breakfast menu, which may include porridge, breakfast rolls or hot croissants. \n\n50% of the profits of this Surprise Bag go to support the Pret Foundation in our mission to alleviate poverty, homelessness and hunger.\n\nFull allergen information on order.", "subtitle": "", "can_user_supply_packaging": false, "packaging_option": "CANT_BRING_ANYTHING", "diet_categories": [], "item_category": "MEAL", "buffet": false, "positive_rating_reasons": ["POSITIVE_FEEDBACK_GREAT_QUANTITY", "POSITIVE_FEEDBACK_DELICIOUS_FOOD", "POSITIVE_FEEDBACK_FRIENDLY_STAFF", "POSITIVE_FEEDBACK_GREAT_VALUE", "POSITIVE_FEEDBACK_QUICK_COLLECTION", "POSITIVE_FEEDBACK_GREAT_VARIETY"], "average_overall_rating": {"average_overall_rating": 4.121495327102804, "rating_count": 107, "month_count": 6, "average_collection_experience_rating": 4.40625, "average_food_quality_rating": 4.189473684210526, "average_contents_variety_rating": 3.8842105263157896, "average_food_quantity_rating": 3.905263157894737}, "favorite_count": 0}, "store": {"store_id": "543246", "store_name": "Pret", "branch": "Watford", "description": "We can\u2019t guarantee our food is suitable for those with allergies due to a high risk of cross-contamination. Our vegan food is made to a vegan recipe but is not suitable for those with dairy and egg allergies. Magic bag may contain a mixture of vegan and non-vegan hot items. The contents of your bag will vary from day to day and will contain allergens. If you would like to know the specific allergens a product contains please check the product label. All food collected is for immediate consumption and hot food must not be reheated.", "tax_identifier": "GB425810411", "website": "", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "1 The Parade, Watford WD17 1LQ, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3979479, "latitude": 51.6568656}}, "logo_picture": {"picture_id": "526441", "current_url": "https://images.tgtg.ninja/storebulkimport/logo/29180/90cd75e1-dfb6-44cd-a519-6b1ec0800173_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.6833555992761384, "cover_picture": {"picture_id": "523610", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/28250/837905b7-d1ff-41ff-8e57-60f519b8c3de.jpg", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Pret - Watford (Breakfast Bag)", "pickup_interval": {"start": "2025-09-07T10:00:00Z", "end": "2025-09-07T11:30:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "1 The Parade, Watford WD17 1LQ, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.3979479, "latitude": 51.6568656}}, "purchase_end": "2025-09-07T11:30:00Z", "items_available": 1, "distance": 0.6833555992761384, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "X_ITEMS_LEFT", "short_text": "1 left", "long_text": "1 left", "variant": "X_ITEMS_LEFT"}]}, {"item": {"item_id": "50706310724360704", "item_price": {"code": "GBP", "minor_units": 900, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 2700, "decimals": 2}, "cover_picture": {"picture_id": "50706524778128768", "current_url": "https://images.tgtg.ninja/item/cover/720f9183-718c-4a3c-9444-41800012ad0d.jpg", "is_automatically_created": false}, "logo_picture": {"picture_id": "826541", "current_url": "https://images.tgtg.ninja/store/08abb296-ab5f-4a58-b957-35d362e710df_thumb.png", "is_automatically_created": false}, "name": "Original", "description": "Rescue 6x1 litre cartons of The Good Pea Co's Original style plant based drink, made from yellow split peas & coconut cream. Each carton contains 34g plant protein and 50% more calcium than cows milk!", "subtitle": "", "food_handling_instructions": "", "can_user_supply_packaging": false, "packaging_option": "BAG_ALLOWED", "collection_info": "Collection for The Good Pea Co is from Watford Smiles dental practice, please ring the doorbell on the blue door to collect!", "diet_categories": ["VEGAN"], "item_category": "OTHER", "buffet": false, "positive_rating_reasons": ["POSITIVE_FEEDBACK_GREAT_VALUE", "POSITIVE_FEEDBACK_FRIENDLY_STAFF", "POSITIVE_FEEDBACK_QUICK_COLLECTION", "POSITIVE_FEEDBACK_GREAT_QUANTITY", "POSITIVE_FEEDBACK_DELICIOUS_FOOD"], "favorite_count": 0}, "store": {"store_id": "50674800518657280", "store_name": "The Good Pea Company", "branch": "Watford", "description": "Plant based milk alternatives that are nutritious, tasty and good for the planet!", "tax_identifier": "", "website": "", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "Watford Smiles, 107 Hempstead Rd, Watford WD17 3HE, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.4101369, "latitude": 51.6647377}}, "logo_picture": {"picture_id": "826541", "current_url": "https://images.tgtg.ninja/store/08abb296-ab5f-4a58-b957-35d362e710df_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.6877564798701905, "cover_picture": {"picture_id": "50706524778128768", "current_url": "https://images.tgtg.ninja/item/cover/720f9183-718c-4a3c-9444-41800012ad0d.jpg", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "The Good Pea Company - Watford (Original)", "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "Watford Smiles, 107 Hempstead Rd, Watford WD17 3HE, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.4101369, "latitude": 51.6647377}}, "items_available": 0, "distance": 0.6877564798701905, "favorite": false, "subscribed_to_notification": false, "in_sales_window": false, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "NOTHING_TO_SAVE_TODAY", "short_text": "Nothing today", "long_text": "Nothing today", "variant": "NOTHING_TO_SAVE_TODAY"}]}, {"item": {"item_id": "535373", "item_price": {"code": "GBP", "minor_units": 480, "decimals": 2}, "item_value": {"code": "GBP", "minor_units": 1440, "decimals": 2}, "cover_picture": {"picture_id": "42285932566108896", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/e4668616-b45e-48f5-a353-5d37b4ca3c6d.png", "is_automatically_created": false}, "logo_picture": {"picture_id": "531440", "current_url": "https://images.tgtg.ninja/storebulkimport/logo/28730/b642b3df-ddc3-4f61-8adf-f2da8e99fa0f_thumb.png", "is_automatically_created": false}, "name": "", "description": "Rescue a selection of delicious wraps, bagels, paninis, salads, sweet treats, yogurts, juices, healthy snacks and your favourite pastry items.\n\nRemember, the contents of your Surprise Bag depend on which items haven't sold that day, so it's a surprise until you pick it up. All items will be nearing their best before or use by date.\n\nAllergen & Ingredients Advice\nWe cannot guarantee that our bakery or heated food items are allergen free. This is due to the nature of how we handle our products. Our bakery and heated food items are prepared by our partners where allergens can come into contact with our shared equipment and utensils. If you need more information about what\u2019s in our products please ask in store and do not swipe to complete your purchase if you cannot get the allergy information you need upon arrival in store. Full details can be found at https://www.starbucks.co.uk/nutrition", "subtitle": "", "can_user_supply_packaging": false, "packaging_option": "CANT_BRING_ANYTHING", "collection_info": "We cannot guarantee that our bakery or heated food items are allergen free. This is due to the nature of  how we handle our products. Our bakery and heated food items are prepared by our partners where allergens can come into contact with our shared equipment and utensils.   If you need more information about what\u2019s in our products please ask in store and do not swipe to complete your purchase if you cannot get the allergy information you need upon arrival in store.\u00a0  Full details can be found at https://www.starbucks.co.uk/nutrition", "diet_categories": [], "item_category": "MEAL", "buffet": false, "positive_rating_reasons": ["POSITIVE_FEEDBACK_FRIENDLY_STAFF", "POSITIVE_FEEDBACK_GREAT_VALUE", "POSITIVE_FEEDBACK_GREAT_QUANTITY", "POSITIVE_FEEDBACK_DELICIOUS_FOOD", "POSITIVE_FEEDBACK_QUICK_COLLECTION", "POSITIVE_FEEDBACK_GREAT_VARIETY"], "average_overall_rating": {"average_overall_rating": 2.8947368421052633, "rating_count": 38, "month_count": 6, "average_collection_experience_rating": 3.6333333333333333, "average_food_quality_rating": 2.6206896551724137, "average_contents_variety_rating": 2.3870967741935485, "average_food_quantity_rating": 2.5172413793103448}, "favorite_count": 0}, "store": {"store_id": "551156", "store_name": "Starbucks", "branch": "Watford", "description": "We cannot guarantee that our bakery or heated food items are allergen free. This is due to the nature of  how we handle our products. Our bakery and heated food items are prepared by our partners where allergens can come into contact with our shared equipment and utensils.", "tax_identifier": "GB719182328", "website": "https://www.starbucks.co.uk/nutrition", "store_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "34 36 High St, Watford WD17 1ED, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.398225, "latitude": 51.656706}}, "logo_picture": {"picture_id": "531440", "current_url": "https://images.tgtg.ninja/storebulkimport/logo/28730/b642b3df-ddc3-4f61-8adf-f2da8e99fa0f_thumb.png", "is_automatically_created": false}, "store_time_zone": "Europe/London", "hidden": false, "favorite_count": 0, "distance": 0.6955274957582434, "cover_picture": {"picture_id": "42285932566108896", "current_url": "https://images.tgtg.ninja/itembulkimport/cover/e4668616-b45e-48f5-a353-5d37b4ca3c6d.png", "is_automatically_created": false}, "is_manufacturer": false}, "display_name": "Starbucks - Watford", "pickup_interval": {"start": "2025-09-06T17:30:00Z", "end": "2025-09-06T19:00:00Z"}, "pickup_location": {"address": {"country": {"iso_code": "GB", "name": "UK"}, "address_line": "34 36 High St, Watford WD17 1ED, UK", "city": "", "postal_code": ""}, "location": {"longitude": -0.398225, "latitude": 51.656706}}, "purchase_end": "2025-09-06T19:00:00Z", "items_available": 1, "distance": 0.6955274957582434, "favorite": false, "subscribed_to_notification": false, "in_sales_window": true, "new_item": false, "item_type": "MAGIC_BAG", "matches_filters": true, "item_tags": [{"id": "X_ITEMS_LEFT", "short_text": "1 left", "long_text": "1 left", "variant": "X_ITEMS_LEFT"}]}];
+        // Load selected store info
+        function loadSelectedStore() {
+            const storeData = localStorage.getItem('selectedStore');
+            if (storeData) {
+                const store = JSON.parse(storeData);
+                const selectedStoreInfo = document.getElementById('selectedStoreInfo');
+                const selectedStoreDetails = document.getElementById('selectedStoreDetails');
+                const selectedStoreLogoImg = document.getElementById('selectedStoreLogoImg');
+                const selectedStoreLogo = document.getElementById('selectedStoreLogo');
+                
+                selectedStoreDetails.textContent = `${store.name} - ${store.branch || store.location}`;
+                selectedStoreInfo.style.display = 'block';
+                
+                // Show store logo if available
+                if (store.logo && store.logo.startsWith('http')) {
+                    selectedStoreLogoImg.src = store.logo;
+                    selectedStoreLogoImg.alt = `${store.name} logo`;
+                    selectedStoreLogoImg.style.display = 'block';
+                    selectedStoreLogo.style.background = 'white';
+                    selectedStoreLogo.style.border = '1px solid #e5e7eb';
+                } else {
+                    selectedStoreLogoImg.style.display = 'none';
+                    selectedStoreLogo.style.background = store.logoBg || '#00796B';
+                    selectedStoreLogo.style.color = store.logoColor || 'white';
+                    selectedStoreLogo.innerHTML = store.name.charAt(0);
+                }
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', loadSelectedStore);
+
+        // Build stores list from data.json and enable navigation
+        async function loadStoresToHome() {
+            try {
+                const offers = TGTG_DATA;
+
+                // Aggregate by store_id
+                const byStore = new Map();
+                for (const entry of offers) {
+                    const s = entry.store;
+                    const it = entry.item;
+                    if (!s || !it) continue;
+                    if (!byStore.has(s.store_id)) {
+                        byStore.set(s.store_id, {
+                            id: s.store_id,
+                            name: s.store_name + (s.branch ? ' - ' + s.branch : ''),
+                            shortName: s.store_name,
+                            branch: s.branch,
+                            logo: (s.logo_picture && s.logo_picture.current_url) || (it.logo_picture && it.logo_picture.current_url) || '',
+                            cover: (s.cover_picture && s.cover_picture.current_url) || (it.cover_picture && it.cover_picture.current_url) || '',
+                            address: s.store_location && s.store_location.address ? s.store_location.address.address_line : '',
+                            location: s.store_location && s.store_location.address ? s.store_location.address.address_line : '',
+                            description: s.description || '',
+                            website: s.website || '',
+                            distance: s.distance || 0,
+                            items: []
+                        });
+                    }
+                    const storeObj = byStore.get(s.store_id);
+                    // Add item/bag info
+                    const priceMinor = it.item_price && it.item_price.minor_units;
+                    const decimals = (it.item_price && it.item_price.decimals) || 2;
+                    const price = typeof priceMinor === 'number' ? (priceMinor / Math.pow(10, decimals)) : null;
+                    storeObj.items.push({
+                        id: it.item_id,
+                        name: it.name,
+                        price,
+                        valueMinor: it.item_value && it.item_value.minor_units,
+                        valueDecimals: (it.item_value && it.item_value.decimals) || 2,
+                        cover: it.cover_picture && it.cover_picture.current_url,
+                        pickup_interval: entry.pickup_interval || null,
+                        items_available: entry.items_available,
+                        item_type: entry.item_type
+                    });
+                }
+
+                const staticStores = Array.from(byStore.values());
+                // Merge with any existing user-added stores instead of overwriting
+                const existing = JSON.parse(localStorage.getItem('realStores') || '[]');
+                const mergeMap = new Map();
+                // Put existing first so user edits/additions win
+                existing.forEach(s => mergeMap.set(s.id, s));
+                staticStores.forEach(s => { if (!mergeMap.has(s.id)) mergeMap.set(s.id, s); });
+                const mergedStores = Array.from(mergeMap.values());
+                // Sort by distance (unknown last)
+                mergedStores.sort((a, b) => {
+                    const ad = (typeof a.distance === 'number') ? a.distance : Infinity;
+                    const bd = (typeof b.distance === 'number') ? b.distance : Infinity;
+                    return ad - bd;
+                });
+                // Persist merged list for other pages
+                localStorage.setItem('realStores', JSON.stringify(mergedStores));
+
+                const list = document.getElementById('storesHomeList');
+                if (list) list.innerHTML = '';
+                (list ? mergedStores : []).forEach(store => {
+                    const card = document.createElement('div');
+                    card.className = 'store-home-card';
+
+                    const logo = document.createElement('div');
+                    logo.className = 'store-home-logo';
+                    if (store.logo) {
+                        const img = document.createElement('img');
+                        img.src = store.logo;
+                        img.alt = store.shortName + ' logo';
+                        img.onerror = () => { logo.textContent = store.shortName.charAt(0); logo.style.background = '#E0F2F1'; };
+                        logo.appendChild(img);
+                    } else {
+                        logo.textContent = store.shortName.charAt(0);
+                    }
+
+                    const info = document.createElement('div');
+                    info.className = 'store-home-info';
+                    const name = document.createElement('div');
+                    name.className = 'store-home-name';
+                    name.textContent = store.name;
+                    const addr = document.createElement('div');
+                    addr.className = 'store-home-address';
+                    addr.textContent = store.address;
+                    info.appendChild(name);
+                    info.appendChild(addr);
+
+                    card.appendChild(logo);
+                    card.appendChild(info);
+
+                    card.addEventListener('click', () => {
+                        localStorage.setItem('selectedStore', JSON.stringify(store));
+                        window.location.href = 'index.html';
+                    });
+
+                    list.appendChild(card);
+                });
+            } catch (e) {
+                console.error('Failed to load stores for home:', e);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadStoresToHome);
+
+        // Share the inline dataset for other pages (stores/index)
+        try {
+            localStorage.setItem('INLINE_DATA', JSON.stringify(TGTG_DATA));
+            sessionStorage.setItem('TGTG_DATA', JSON.stringify(TGTG_DATA));
+        } catch (e) {}
+
+        // Edit Order & Add Store modals
+        function createModal(id, title, bodyHtml) {
+            const modal = document.createElement('div');
+            modal.id = id;
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="modal-title">${title}</div>
+                        <button class="close-btn" data-close>✕</button>
+                    </div>
+                    ${bodyHtml}
+                </div>`;
+            document.body.appendChild(modal);
+            modal.addEventListener('click', (e) => { if (e.target === modal || e.target.hasAttribute('data-close')) modal.classList.remove('show'); });
+            return modal;
+        }
+
+        const editBody = `
+            <div class="form-grid">
+                <div>
+                    <label>Bag name</label>
+                    <input id=\"eo_name\" type=\"text\" placeholder=\"Evening Bag\">
+                </div>
+                <div class=\"row\">
+                    <div>
+                        <label>Price (£)</label>
+                        <input id=\"eo_price\" type=\"number\" step=\"0.01\" min=\"0\" placeholder=\"3.19\">
+                    </div>
+                    <div>
+                        <label>Quantity</label>
+                        <input id=\"eo_qty\" type=\"number\" min=\"1\" value=\"1\">
+                    </div>
+                </div>
+                <div class=\"row\">
+                    <div>
+                        <label>Start time (ISO)</label>
+                        <input id=\"eo_start\" type=\"datetime-local\">
+                    </div>
+                    <div>
+                        <label>End time (ISO)</label>
+                        <input id=\"eo_end\" type=\"datetime-local\">
+                    </div>
+                </div>
+                <div class=\"row\">
+                    <button id=\"eo_save\" class=\"primary\" type=\"button\">Save changes</button>
+                    <button class=\"secondary\" data-close type=\"button\">Cancel</button>
+                </div>
+            </div>`;
+        const editModal = createModal('edit-order-modal', 'Edit Order', editBody);
+
+        document.getElementById('editOrderBtn').addEventListener('click', () => {
+            const storeData = JSON.parse(localStorage.getItem('selectedStore') || 'null');
+            if (storeData && storeData.items && storeData.items[0]) {
+                const it = storeData.items[0];
+                document.getElementById('eo_name').value = it.name || '';
+                document.getElementById('eo_price').value = typeof it.price === 'number' ? it.price.toFixed(2) : '';
+                document.getElementById('eo_qty').value = it.quantity || 1;
+                const s = it.pickup_interval && it.pickup_interval.start ? new Date(it.pickup_interval.start) : null;
+                const e = it.pickup_interval && it.pickup_interval.end ? new Date(it.pickup_interval.end) : null;
+                if (s) document.getElementById('eo_start').value = s.toISOString().slice(0,16);
+                if (e) document.getElementById('eo_end').value = e.toISOString().slice(0,16);
+            }
+            editModal.classList.add('show');
+        });
+
+        editModal.addEventListener('click', (e) => {
+            if (e.target && e.target.id === 'eo_save') {
+                const store = JSON.parse(localStorage.getItem('selectedStore') || 'null');
+                if (!store) return;
+                const name = document.getElementById('eo_name').value.trim();
+                const price = parseFloat(document.getElementById('eo_price').value || '0');
+                const qty = parseInt(document.getElementById('eo_qty').value || '1', 10);
+                const start = document.getElementById('eo_start').value;
+                const end = document.getElementById('eo_end').value;
+                if (!store.items) store.items = [];
+                if (!store.items[0]) store.items[0] = {};
+                store.items[0].name = name || store.items[0].name || 'Bag';
+                store.items[0].price = isNaN(price) ? store.items[0].price : price;
+                store.items[0].pickup_interval = { start: start ? new Date(start).toISOString() : (store.items[0].pickup_interval && store.items[0].pickup_interval.start), end: end ? new Date(end).toISOString() : (store.items[0].pickup_interval && store.items[0].pickup_interval.end) };
+                store.items[0].quantity = qty;
+                localStorage.setItem('selectedStore', JSON.stringify(store));
+                const rs = JSON.parse(localStorage.getItem('realStores') || '[]');
+                const idx = rs.findIndex(s => s.id === store.id);
+                if (idx >= 0) { rs[idx] = store; localStorage.setItem('realStores', JSON.stringify(rs)); }
+                editModal.classList.remove('show');
+            }
+        });
+
+        // Add Store modal
+        const addBody = `
+            <div class=\"form-grid\">
+                <div class=\"row\">
+                    <div>
+                        <label>Store name</label>
+                        <input id=\"as_name\" type=\"text\" placeholder=\"My Store\" required>
+                    </div>
+                    <div>
+                        <label>Branch</label>
+                        <input id=\"as_branch\" type=\"text\" placeholder=\"City Centre\">
+                    </div>
+                </div>
+                <div>
+                    <label>Address</label>
+                    <input id=\"as_address\" type=\"text\" placeholder=\"123 High St, London\" required>
+                </div>
+                <div>
+                    <label>Description</label>
+                    <textarea id=\"as_desc\" rows=\"2\" placeholder=\"Short store description\"></textarea>
+                </div>
+                <div class=\"row\">
+                    <div>
+                        <label>Distance (km)</label>
+                        <input id=\"as_distance\" type=\"number\" step=\"0.1\" min=\"0\" placeholder=\"0.5\">
+                    </div>
+                    <div class=\"file-input-wrapper\">
+                        <label>Logo</label>
+                        <input id=\"as_logo\" type=\"file\" accept=\"image/*\">
+                        <div class=\"logo-preview\" id=\"as_logo_preview\">No logo</div>
+                    </div>
+                </div>
+                <div class=\"row\">
+                    <div>
+                        <label>Bag name</label>
+                        <input id=\"as_bag\" type=\"text\" placeholder=\"Surprise Bag\">
+                    </div>
+                    <div>
+                        <label>Price (£)</label>
+                        <input id=\"as_price\" type=\"number\" step=\"0.01\" min=\"0\" placeholder=\"3.19\">
+                    </div>
+                </div>
+                <div class=\"row\">
+                    <div>
+                        <label>Start time (ISO)</label>
+                        <input id=\"as_start\" type=\"datetime-local\">
+                    </div>
+                    <div>
+                        <label>End time (ISO)</label>
+                        <input id=\"as_end\" type=\"datetime-local\">
+                    </div>
+                </div>
+                <div class=\"row\">
+                    <button id=\"as_save\" class=\"primary\" type=\"button\">Add store</button>
+                    <button class=\"secondary\" data-close type=\"button\">Cancel</button>
+                </div>
+            </div>`;
+        const addModal = createModal('add-store-modal', 'Add Store', addBody);
+
+        document.getElementById('addStoreBtn').addEventListener('click', () => { addModal.classList.add('show'); });
+
+        function readFileAsDataUrl(input) {
+            return new Promise((resolve) => {
+                if (!input || !input.files || !input.files[0]) return resolve('');
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.readAsDataURL(input.files[0]);
+            });
+        }
+
+        // Live preview for Add Store logo
+        document.addEventListener('change', async (e) => {
+            if (e.target && e.target.id === 'as_logo') {
+                const preview = document.getElementById('as_logo_preview');
+                const dataUrl = await readFileAsDataUrl(e.target);
+                if (dataUrl) {
+                    preview.innerHTML = `<img src="${dataUrl}" alt="Logo preview">`;
+                    preview.style.border = '1px solid #e5e7eb';
+                } else {
+                    preview.textContent = 'No logo';
+                }
+            }
+        });
+
+        addModal.addEventListener('click', async (e) => {
+            if (e.target && e.target.id === 'as_save') {
+                const name = document.getElementById('as_name').value.trim();
+                const branch = document.getElementById('as_branch').value.trim();
+                const address = document.getElementById('as_address').value.trim();
+                const description = document.getElementById('as_desc').value.trim();
+                const distance = parseFloat(document.getElementById('as_distance').value || '0');
+                const fileInput = document.getElementById('as_logo');
+                const logoDataUrl = await readFileAsDataUrl(fileInput);
+                const bag = document.getElementById('as_bag').value.trim() || 'Surprise Bag';
+                const price = parseFloat(document.getElementById('as_price').value || '0');
+                const start = document.getElementById('as_start').value;
+                const end = document.getElementById('as_end').value;
+
+                const newStore = {
+                    id: 'local_' + Date.now(),
+                    name: branch ? `${name} - ${branch}` : name,
+                    shortName: name,
+                    branch,
+                    logo: logoDataUrl,
+                    cover: '',
+                    address,
+                    location: address,
+                    description,
+                    website: '',
+                    distance: isNaN(distance) ? 0 : distance,
+                    items: [{
+                        id: 'item_' + Date.now(),
+                        name: bag,
+                        price: isNaN(price) ? 0 : price,
+                        pickup_interval: { start: start ? new Date(start).toISOString() : null, end: end ? new Date(end).toISOString() : null },
+                        items_available: 1
+                    }]
+                };
+
+                const rs = JSON.parse(localStorage.getItem('realStores') || '[]');
+                rs.push(newStore);
+                // Persist sorted by distance (unknown distances go to bottom)
+                const sorted = rs.slice().sort((a, b) => {
+                    const ad = (typeof a.distance === 'number') ? a.distance : Infinity;
+                    const bd = (typeof b.distance === 'number') ? b.distance : Infinity;
+                    return ad - bd;
+                });
+                localStorage.setItem('realStores', JSON.stringify(sorted));
+                localStorage.setItem('selectedStore', JSON.stringify(newStore));
+                addModal.classList.remove('show');
+                window.location.href = 'stores.html';
+            }
+        });
+    </script>
+</body>
+</html>
