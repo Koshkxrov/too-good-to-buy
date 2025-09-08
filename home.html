@@ -2,8 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Too Good To Buy</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Too Good To Buy">
+    <meta name="theme-color" content="#0e7c71">
+    <meta name="msapplication-TileColor" content="#0e7c71">
+    
+    <!-- Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icon.png">
+    <link rel="manifest" href="manifest.webmanifest">
     <style>
         * {
             margin: 0;
@@ -16,13 +29,18 @@
             background-color: #F8F7F5;
             color: #1A1A1A;
             line-height: 1.5;
+            min-height: 100dvh;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
         }
         
         .container {
             max-width: 400px;
             margin: 0 auto;
             background: white;
-            min-height: 100vh;
+            min-height: 100dvh;
         }
         
         .status-bar {
@@ -673,6 +691,19 @@
                 window.location.href = 'stores.html';
             }
         });
+        
+        // Register service worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
     </script>
 </body>
 </html>

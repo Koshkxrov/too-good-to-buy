@@ -1,0 +1,19 @@
+{
+  "name": "Too Good To Buy",
+  "short_name": "TGTG",
+  "description": "Find and collect surprise bags from local stores",
+  "start_url": "/home.html",
+  "display": "standalone",
+  "background_color": "#F8F7F5",
+  "theme_color": "#0e7c71",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
