@@ -394,17 +394,22 @@
         }
         
         .modal-title {
-            font-weight: 700;
+            font-weight: 800;
             color: #1A1A1A;
+            font-size: 20px;
+            text-align: center;
+            margin: 0 auto;
+            transform: translateX(8px); /* nudge slightly right to visually center */
         }
         
         .close-button {
-            color: #666666;
+            color: #1A1A1A;
             background: none;
             border: none;
             cursor: pointer;
             padding: 4px;
-            font-size: 18px;
+            font-weight: 800;
+            font-size: 24px;
         }
         
         .modal-body {
@@ -412,10 +417,15 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            min-height: 400px; /* Fixed height to prevent shrinking */
+            position: relative; /* For absolute positioning of overlay */
         }
         
         .modal-center {
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
         .quantity-label {
@@ -453,7 +463,7 @@
         }
         
         .order-code-container {
-            margin: 8px 0 12px;
+            margin: 8px 0 6px; /* less bottom space to bring divider higher */
             text-align: center;
         }
         
@@ -461,23 +471,27 @@
             display: inline-block;
             background: #0F766E;
             color: white;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-weight: 700;
-            font-size: 14px;
-            letter-spacing: 1px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            letter-spacing: 0.5px;
         }
         
         .divider-line {
             height: 1px;
             background: #E5E7EB;
-            margin: 12px 0;
+            margin: 6px 0; /* raise line closer to the code */
         }
         
         .instructions {
-            margin: 8px 0 14px;
+            margin: 6px 0 8px; /* move higher and reduce bottom gap */
             text-align: center;
+        }
+        .instructions p {
+            font-size: 14px; /* make text under the line bigger */
+            line-height: 1.35;
         }
         
         .instructions p {
@@ -523,67 +537,122 @@
             display: block;
         }
         
-        .swipe-container {
-            position: relative;
-            overflow: hidden;
+        /* Curtain-only swipe (no knob) */
+        :root{
+            --teal:#0F766E;     /* основной зелёный */
+            --ink:#0F766E;      /* цвет текста и рамки */
+            --bg:#FFFFFF;       /* фон */
         }
-        
-        .swipe-track {
-            position: relative;
-            height: 52px;
-            border-radius: 9999px;
-            border: 1px solid #e2e8f0;
-            background: #ffffff;
-            overflow: hidden;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        .swipe-wrap{width:min(400px,80vw);margin:8px auto 0}
+        .swipe-track{
+            position:relative;height:60px;background:var(--bg);
+            border-radius:9999px;overflow:hidden;user-select:none;touch-action:none;
+            box-shadow:0 2px 8px rgba(0,0,0,.06); cursor:grab;
         }
-        
-        .swipe-track.confirmed {
-            border-color: #a7f3d0;
-            background: #E0F2F1;
+        .swipe-track.dragging{ cursor:grabbing; }
+
+        /* border that appears over everything */
+        .swipe-track::before{
+            content:"";position:absolute;inset:0;border:2px solid var(--ink);border-radius:9999px;pointer-events:none;z-index:4;
         }
-        
-        .swipe-knob {
-            position: absolute;
-            top: 6px;
-            left: 6px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #0F766E;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            color: white;
-            cursor: grab;
-            transition: transform 0.3s ease;
+
+        .swipe-fill{
+            position:absolute;
+            left:0; top:0; bottom:0;
+            width:60px;                  /* just enough for the round tip */
+            background:#0F766E;          /* teal */
+            border-radius:9999px;        /* makes the tip perfectly round */
+            display:flex;
+            align-items:center;
+            justify-content:flex-end;    /* position arrow at the tip (right edge) */
+            padding-right:13px;          /* small inset from the edge (moved 5px left total) */
+            z-index:1;
         }
-        
-        .swipe-knob:active {
-            cursor: grabbing;
+
+        /* arrow itself */
+        .chev-on-fill{
+            width:32px; height:32px;
+            pointer-events:none;
         }
-        
-        .swipe-knob.dragging {
-            transition: none;
+
+        .swipe-text{
+            position:absolute;inset:0;display:grid;place-items:center;z-index:2;
+            font:600 16px/1.2 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);pointer-events:none;
+            transform: translateX(12px); /* move text 12px to the right */
         }
-        
-        .swipe-knob.confirmed {
-            background: #00796B;
-            transform: translateX(calc(100vw - 4rem - 0.5rem));
+        .swipe-track.done .swipe-text{ color:#fff }
+
+        /* utility to hide nodes when success starts */
+        .hidden{display:none !important}
+
+        /* Overlay center animation */
+        .demo-wrap{position:relative}
+        .overlay-mini{position:absolute;left:50%;top:60%;transform:translate(-50%, -50%);width:60px;height:60px;
+                      display:none;align-items:center;justify-content:center;z-index:10;pointer-events:none}
+        .overlay-mini.show{display:flex}
+
+        /* 1) Loader arc */
+        .loader{width:60px;height:60px;opacity:0;transform:translateY(6px) scale(.96);
+                transition:opacity .25s ease, transform .25s ease}
+        .loader-arc{transform:rotate(-90deg);transform-origin:50% 50%}
+
+        /* Base circle (ring + white inner ring) and stages */
+        .ringBase{position:absolute;width:60px;height:60px;opacity:0;transform:scale(.9);
+                  transition:opacity .22s ease, transform .22s ease}
+        .ringOuter,.ringInner{position:absolute;border-radius:50%}
+        .ringOuter{inset:0;border:3px solid var(--teal);background:transparent;will-change:transform,opacity}
+        .ringInner{inset:10px;border:10px solid #fff}
+
+        /* Fill-dot (center dot expands to fill inner circle) */
+        .fillDot{position:absolute;left:50%;top:50%;width:44px;height:44px;background:var(--teal);
+                 border-radius:50%;transform:translate(-50%,-50%) scale(0);opacity:1;
+                 transition:transform .42s cubic-bezier(.2,.8,.2,1)}
+
+        /* Halo (expanding ring that fades out) */
+        .halo{position:absolute;left:50%;top:50%;width:60px;height:60px;border:3px solid var(--teal);
+              border-radius:50%;transform:translate(-50%,-50%) scale(1);opacity:0;pointer-events:none}
+
+        @keyframes haloExpand {
+            0%   {transform:translate(-50%,-50%) scale(1);   opacity:.35;}
+            100% {transform:translate(-50%,-50%) scale(1.35);opacity:0;}
         }
-        
-        .swipe-label {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #0F766E;
-            font-size: 16px;
-            font-weight: 700;
-            pointer-events: none;
+        @keyframes ringPulse {
+            0% {transform:scale(1);}
+            50%{transform:scale(1.08);}
+            100%{transform:scale(1);}
         }
+        @keyframes ringFadeOut {
+            0%   {opacity:1; transform:scale(1);}
+            100% {opacity:0; transform:scale(1.1);}
+        }
+
+        /* Check */
+        .check{position:absolute;left:50%;top:50%;width:26px;height:26px;
+               transform:translate(-50%,-50%) scale(.88);opacity:0;
+               transition:opacity .22s ease, transform .22s ease}
+
+        /* ДОБАВЬ это в CSS */
+        .ring-gone .ringOuter,
+        .ring-gone .ringInner{
+          opacity:0 !important;
+          display:none !important;
+        }
+
+        /* на всякий случай — чтобы ореол не «откатился» */
+        .halo {
+          animation-fill-mode: forwards;
+        }
+
+        /* если где-то был reflow — принудительно убираем stroke у SVG-лоадера */
+        .loader.killed circle { stroke: transparent !important; opacity: 0 !important; }
+
+        /* Success text */
+        .success-text{position:absolute;left:50%;top:80%;transform:translate(-50%, -50%);text-align:center;opacity:0;transition:opacity .3s ease}
+        .success-text.show{opacity:1}
+        .success-title{font:600 18px/1.2 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--teal);margin:0 0 8px 0}
+        .success-instruction{font:400 14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#6B7280;margin:0;max-width:280px}
+
+        /* no dimming of background on success per request */
         
         .swipe-instructions {
             margin-top: 8px;
@@ -690,7 +759,7 @@
                 <button id="collect-btn" onclick="showModal()" class="collect-button">
                     Tap to collect
                 </button>
-
+                
                 <!-- Receive reminder button with bell icon -->
                 <a href="#" class="reminder-link">
                     <span>Receive a reminder</span>
@@ -712,8 +781,8 @@
     <!-- Collection Modal -->
     <div id="collection-modal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">Order to collect</div>
+            <div class="modal-header" style="border-bottom:none;">
+                <div class="modal-title">Order to be collected</div>
                 <button onclick="hideModal()" class="close-button" aria-label="Close dialog">✕</button>
             </div>
 
@@ -733,15 +802,53 @@
                     <p>Swipe below and show the order to the staff. Make sure to swipe only when you're in the store ready to collect your meal.</p>
                 </div>
 
-                <div class="swipe-container">
-                    <div class="swipe-track" id="swipeTrack">
-                        <div class="swipe-knob" id="swipeKnob">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M5 12h14M12 5l7 7-7 7"/>
-                            </svg>
-                        </div>
+                <!-- ====== SWIPE TO COLLECT (curtain style) + success sequence ====== -->
+                <div class="demo-wrap" id="screen">
+                    <!-- Curtain-only swipe (no knob), round tip + arrow on the curtain -->
+                    <div class="swipe-wrap">
+                        <div class="swipe-track" id="swipeTrack" role="button" aria-label="Swipe to collect">
+                            <!-- Curtain fill -->
+                            <div class="swipe-fill" id="swipeFill">
+                                <!-- Arrow directly on the curtain -->
+                                <svg viewBox="0 0 24 24" class="chev-on-fill" aria-hidden="true">
+                                    <path d="M9 6l6 6-6 6"
+                                          fill="none"
+                                          stroke="#FFFFFF"
+                                          stroke-width="3.6"
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"/>
+                        </svg>
                     </div>
-                    <div class="swipe-label">Swipe to collect</div>
+                            <span class="swipe-text" id="swipeText">Swipe to collect</span>
+                </div>
+                </div>
+                </div>
+
+                <!-- Overlay center animation -->
+                <div class="overlay-mini" id="overlay">
+                    <!-- 1) loader arc -->
+                    <svg class="loader" id="loader" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="34" fill="none" stroke="#0F766E" stroke-width="3" opacity="0.15"/>
+                        <circle class="loader-arc" cx="50" cy="50" r="34" fill="none" stroke="#0F766E" stroke-width="3"
+                                stroke-linecap="round" stroke-dasharray="215" stroke-dashoffset="215"/>
+                    </svg>
+
+                    <!-- 2–4) ring + fill + halo + check -->
+                    <div class="ringBase" id="ringBase">
+                        <div class="ringOuter"></div>          <!-- зелёный контур -->
+                        <div class="ringInner"></div>          <!-- белое внутреннее кольцо -->
+                        <div class="fillDot" id="fillDot"></div> <!-- точка, которая расширяется и заполняет -->
+                        <div class="halo" id="halo"></div>     <!-- расходящееся кольцо-ореол -->
+                        <svg class="check" id="check" viewBox="0 0 24 24">
+                            <path d="M5 13l4 4 10-10" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                <!-- Success text -->
+                <div class="success-text" id="successText">
+                    <h2 class="success-title">Collection confirmed</h2>
+                    <p class="success-instruction">Show this to the store staff to collect your meal!</p>
                 </div>
 
                 <button id="close-btn" onclick="hideModal()" class="close-button-modal">Close</button>
@@ -906,97 +1013,183 @@
             document.getElementById('modal-order-code').textContent = 'F88GWNF3C87Q0';
             
             console.log('Modal updated with:', { quantity, itemName, storeName });
+            // Dim the header/top area too while modal is open
+            document.querySelector('.header').style.filter = 'brightness(0.92)';
             
             document.getElementById('collection-modal').classList.add('show');
         }
 
         function hideModal() {
             document.getElementById('collection-modal').classList.remove('show');
+            document.querySelector('.header').style.filter = '';
         }
 
-        // Swipe functionality
-        let isDragging = false;
-        let startX = 0;
-        let currentX = 0;
-        let knob = document.getElementById('swipe-knob');
-        let track = document.getElementById('swipe-track');
-        let confirmed = false;
+        // Curtain-only swipe (no knob), round tip + arrow on the curtain
+        (function(){
+            const track  = document.getElementById('swipeTrack');
+            const fill   = document.getElementById('swipeFill');
+            const text   = document.getElementById('swipeText');
+            const chev   = document.getElementById('chevOnFill');
 
-        knob.addEventListener('mousedown', startDrag);
-        knob.addEventListener('touchstart', startDrag);
+            const trackH = 60;            // track height
+            const insetB = 2;             // visual border inset used for mask
+            const successPct = 0.88;
 
-        function startDrag(e) {
-            if (confirmed) return;
-            isDragging = true;
-            knob.classList.add('dragging');
-            startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+            let dragging=false, startX=0, startW=0;
+
+            const maxW  = ()=> track.clientWidth;               // full width of track
+            const clamp = (n,a,b)=> Math.max(a, Math.min(b,n));
+
+            // place curtain: set width (arrow is centered automatically via flexbox)
+            function setCurtain(w){
+                const W = clamp(w, trackH, maxW()); // ensure minimum width is track height
+                fill.style.width = W + 'px';
+            }
+
+            function down(e){
+                if(track.classList.contains('done')) return;
+                dragging = true;
+                track.classList.add('dragging');
+                const pt = e.touches ? e.touches[0] : e;
+                const r  = track.getBoundingClientRect();
+                startX   = pt.clientX;
+                startW   = parseFloat(getComputedStyle(fill).width);
+                // if tapped to the right of the tip, pick it up from there
+                const edge = r.left + startW;
+                if(pt.clientX > edge){ startW = pt.clientX - r.left; setCurtain(startW); startX = pt.clientX; }
             e.preventDefault();
         }
 
-        document.addEventListener('mousemove', drag);
-        document.addEventListener('touchmove', drag);
-
-        function drag(e) {
-            if (!isDragging || confirmed) return;
-            currentX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
-            const deltaX = currentX - startX;
-            const maxX = track.offsetWidth - knob.offsetWidth - 8;
-            const newX = Math.min(maxX, Math.max(0, deltaX));
-            knob.style.transform = `translateX(${newX}px)`;
-            
-            if (newX >= maxX * 0.92) {
-                confirmSwipe();
+            function move(e){
+                if(!dragging) return;
+                const pt = e.touches ? e.touches[0] : e;
+                const dx = pt.clientX - startX;
+                setCurtain(startW + dx);
             }
-        }
 
-        document.addEventListener('mouseup', endDrag);
-        document.addEventListener('touchend', endDrag);
-
-        function endDrag() {
-            if (!isDragging || confirmed) return;
-            isDragging = false;
-            knob.classList.remove('dragging');
-            
-            const maxX = track.offsetWidth - knob.offsetWidth - 8;
-            const currentTransform = knob.style.transform;
-            const currentX = parseFloat(currentTransform.replace('translateX(', '').replace('px)', ''));
-            
-            if (currentX < maxX * 0.92) {
-                knob.style.transform = 'translateX(0px)';
+            function up(){
+                if(!dragging) return;
+                dragging=false;
+                track.classList.remove('dragging');
+                const W = parseFloat(getComputedStyle(fill).width);
+                if(W / maxW() >= successPct){
+                    setCurtain(maxW());
+                    track.classList.add('done');
+                    text.textContent = 'Collected';
+                    try{ navigator.vibrate && navigator.vibrate(10);}catch{}
+                    startFinalSequence();
+                }else{
+                    // snap back to initial round "button" look
+                    setCurtain(trackH); // старт как круглый носик
+                }
             }
-        }
 
-        function confirmSwipe() {
-            confirmed = true;
-            track.classList.add('confirmed');
-            knob.classList.add('confirmed');
-            
-            // Replace modal body content to match the confirmation screen
-            const modalBody = document.querySelector('#collection-modal .modal-body');
-            const first = (selectedStore && selectedStore.items && selectedStore.items[0]) || null;
-            const orderCode = 'F88GWNF3C87Q0';
-            modalBody.innerHTML = `
-                <div class="modal-center">
-                    <div class="quantity-circle">${first ? (first.items_available || first.quantity || 1) + 'x' : ''}</div>
-                    <div class="item-name" style="font-size:18px;font-weight:700;">${first ? (first.name || 'Bag') : 'Bag'}</div>
-                    <div style="color:#555;">${selectedStore ? selectedStore.name : ''}</div>
-                    <div style="margin-top:12px;">
-                        <span class="order-code">${orderCode}</span>
-                    </div>
-                </div>
-                <div style="border-top:1px solid #e5e7eb;margin:16px 0;"></div>
-                <div style="display:flex;align-items:center;justify-content:center;">
-                    <div class="status-icon" style="background:#0F766E;color:#fff;border:0;width:80px;height:80px;">
-                        <svg class="icon" viewBox="0 0 24 24">
-                            <path d="M20 6 9 17"/>
-                            <path d="M9 17 4 12"/>
-                        </svg>
-                    </div>
-                </div>
-                <div class="status-text" style="font-size:18px;color:#0F766E;font-weight:700;margin-top:8px;">Collection confirmed</div>
-                <div class="status-text" style="font-size:16px;color:#6b7280;margin-top:8px;text-align:center;">Show this to the store staff to collect your meal!</div>
-            `;
-        }
+            // init: start with round tip look (curtain width ~= track height)
+            setCurtain(trackH);
+
+            // events
+            track.addEventListener('mousedown', down);
+            document.addEventListener('mousemove', move);
+            document.addEventListener('mouseup',   up);
+
+            track.addEventListener('touchstart', down, {passive:false});
+            document.addEventListener('touchmove', move, {passive:false});
+            document.addEventListener('touchend',  up);
+
+            // Final sequence (arc → fill → pulse+halo → check)
+            function startFinalSequence(){
+                const overlay  = document.getElementById('overlay');
+                const loader   = document.getElementById('loader');
+                const arc      = loader.querySelector('.loader-arc');
+                const ringBase = document.getElementById('ringBase');
+                const ringOuter= ringBase.querySelector('.ringOuter');
+                const fillDot  = document.getElementById('fillDot');
+                const halo     = document.getElementById('halo');
+                const check    = document.getElementById('check');
+
+                // Hide swipe bar and instructions immediately
+                document.querySelector('.swipe-wrap')?.classList.add('hidden');
+                document.querySelector('.instructions')?.classList.add('hidden');
+
+                overlay.classList.add('show');
+
+                // 1) arc 0→100% (faster)
+                requestAnimationFrame(()=>{ loader.style.opacity='1'; loader.style.transform='translateY(0) scale(1)'; });
+                let start=null; const total=215, durArc=400;
+                function tick(ts){
+                    if(!start) start=ts;
+                    const p=Math.min(1,(ts-start)/durArc);
+                    arc.style.strokeDashoffset = String(total*(1-p));
+                    if(p<1) requestAnimationFrame(tick);
+                }
+                requestAnimationFrame(tick);
+
+                // 2) show ring + inner white ring; grow fillDot to fill inner circle (faster)
+                setTimeout(()=>{
+                    loader.style.opacity='0'; loader.style.transform='translateY(-6px) scale(.96)';
+                    loader.classList.add('killed');      // чтобы stroke исчез
+                    loader.style.display = 'none';       // и не мешал визуально
+                    ringBase.style.opacity='1'; ringBase.style.transform='scale(1)';
+                    fillDot.style.transform = 'translate(-50%,-50%) scale(1)';
+                }, durArc + 80);
+
+                // 3) pulse ring, emit halo, then remove BOTH rings for good (faster)
+                setTimeout(() => {
+                    const ringInner = ringBase.querySelector('.ringInner');
+
+                    // пульс ИМЕННО зелёного контура (не контейнера) - faster
+                    ringOuter.style.animation = 'ringPulse 200ms ease';
+
+                    // ореол — расширяется и растворяется, и не откатывается - faster
+                    halo.style.animation = 'haloExpand 300ms ease forwards';
+                    halo.style.opacity = '1';
+
+                    // после пульса — плавное исчезновение зелёного кольца - faster
+                    setTimeout(() => {
+                        ringOuter.style.animation = 'ringFadeOut 300ms ease forwards';
+                    }, 200);
+
+                    const finallyKillRings = () => {
+                        // помечаем контейнер как избавившийся от колец
+                        ringBase.classList.add('ring-gone');
+
+                        // на всякий — жёстко убираем оба элемента
+                        if (ringOuter) { ringOuter.style.opacity = '0'; ringOuter.style.display = 'none'; }
+                        if (ringInner) { ringInner.style.opacity = '0'; ringInner.style.display = 'none'; }
+
+                        // и SVG-лоадер тоже больше не виден
+                        loader.classList.add('killed');
+                        loader.style.display = 'none';
+                    };
+
+                    // слушатели конца анимации (Chrome/Firefox/Safari)
+                    const onFadeEnd = (e) => {
+                        if (e.animationName === 'ringFadeOut') {
+                            ringOuter.removeEventListener('animationend', onFadeEnd);
+                            ringOuter.removeEventListener('webkitAnimationEnd', onFadeEnd);
+                            finallyKillRings();
+                        }
+                    };
+                    ringOuter.addEventListener('animationend', onFadeEnd);
+                    ringOuter.addEventListener('webkitAnimationEnd', onFadeEnd);
+
+                    // ФОЛБЭК на случай, если событие не придёт (старый Safari и т.п.) - faster
+                    setTimeout(finallyKillRings, 600);
+
+                    // 4) чек появляется параллельно
+                    check.style.opacity = '1';
+                    check.style.transform = 'translate(-50%,-50%) scale(1)';
+
+                    // 5) показать текст успеха
+                    setTimeout(() => {
+                        document.getElementById('successText').classList.add('show');
+                    }, 200);
+                }, durArc + 80 + 300);
+
+                // (опционально) скрыть overlay через N мс:
+                // setTimeout(()=> overlay.classList.remove('show'), 1800);
+            }
+        })();
 
         // Close modal when clicking outside
         document.getElementById('collection-modal').addEventListener('click', function(e) {
