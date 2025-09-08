@@ -94,6 +94,7 @@
         .back-btn svg {
             width: 20px;
             height: 20px;
+            color: #000000;
         }
         
         .header-title {
@@ -108,6 +109,12 @@
         
         .content {
             padding: 16px;
+        }
+
+        /* Safe area strip for iOS notch: white background above header */
+        .safe-area-top {
+            height: env(safe-area-inset-top);
+            background: #ffffff;
         }
         
         .card {
@@ -575,7 +582,7 @@
 </head>
 <body>
     <div class="container">
-        
+        <div class="safe-area-top"></div>
 
         <!-- Header -->
         <header class="header">
