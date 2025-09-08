@@ -4,7 +4,8 @@ const urlsToCache = [
   '/home.html',
   '/stores.html',
   '/index.html',
-  '/manifest.webmanifest'
+  '/manifest.webmanifest',
+  '/icon.PNG'
 ];
 
 // Install event - cache resources
