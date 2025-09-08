@@ -30,7 +30,6 @@
             color: #1A1A1A;
             line-height: 1.5;
             min-height: 100dvh;
-            padding-top: env(safe-area-inset-top);
             padding-bottom: env(safe-area-inset-bottom);
             padding-left: env(safe-area-inset-left);
             padding-right: env(safe-area-inset-right);
@@ -681,7 +680,7 @@
             <div class="modal-body">
                 <div class="modal-center">
                     <div class="quantity-label">Qty</div>
-                    <div class="quantity-circle">1x</div>
+                    <div class="quantity-circle">${selectedStore && selectedStore.items && selectedStore.items[0] ? (selectedStore.items[0].items_available || selectedStore.items[0].quantity || 1) + 'x' : '1x'}</div>
                     <div class="item-name">Evening Bag</div>
                     <div>
                         <span class="order-code">DK1H</span>
@@ -923,7 +922,7 @@
             const orderCode = 'F88GWNF3C87Q0';
             modalBody.innerHTML = `
                 <div class="modal-center">
-                    <div class="quantity-circle">${first ? '1x' : ''}</div>
+                    <div class="quantity-circle">${first ? (first.items_available || first.quantity || 1) + 'x' : ''}</div>
                     <div class="item-name" style="font-size:18px;font-weight:700;">${first ? (first.name || 'Bag') : 'Bag'}</div>
                     <div style="color:#555;">${selectedStore ? selectedStore.name : ''}</div>
                     <div style="margin-top:12px;">
