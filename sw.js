@@ -1,11 +1,11 @@
 const CACHE_NAME = 'tgtg-v1';
 const urlsToCache = [
-  '/',
-  '/home.html',
-  '/stores.html',
-  '/index.html',
-  '/manifest.webmanifest',
-  '/icon.PNG'
+  './',
+  './home.html',
+  './stores.html',
+  './index.html',
+  './manifest.webmanifest',
+  './icon.PNG'
 ];
 
 // Install event - cache resources
